@@ -1,0 +1,5 @@
+locale: us_en
+translation:
+  command:
+    no_permission: §cYou have no permission to use this command
+    alias_list: '§7You can use these aliases for command "<name>": <aliases>'
