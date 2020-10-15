@@ -11,6 +11,10 @@ public class LocalePlayer {
         this.api = api;
     }
 
+    public boolean hasKey(String key) {
+        return api.hasKey(uuid, key);
+    }
+
     public String trans(String key) {
         return api.getTranslation(uuid, key);
     }

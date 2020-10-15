@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 public class LanguageAPI {
     public static final String LOCALE_KEY = "locale";
     public static final String TRANSLATION_KEY = "translation";
+    public static LanguageAPI DEFAULT;
 
     private static final HashMap<String, LanguageAPI> registered = new HashMap<>();
     public static LanguageAPI load(String pluginName) {
@@ -95,12 +96,16 @@ public class LanguageAPI {
         return PlayerLocaleManager.hasLocale(uuid);
     }
 
+    public boolean hasKey(UUID uuid, String key) {
+        return hasPlayer(uuid) && localeMap.getOrDefault(PlayerLocaleManager.getLocale(uuid), empty).has(key);
+    }
+
     public String getTranslation(String locale, String key) {
         return localeMap.getOrDefault(locale, empty).getOrDefault(key, localeMap.getOrDefault(defaultLocale, empty).get(key));
     }
 
     public String getTranslationWithTag(String locale, String key, Map<String, String> map) {
-        return TagI18N.trans(getTranslation(locale, key), map);
+        return translateWithTag(getTranslation(locale, key), map);
     }
 
     public String getTranslation(UUID uuid, String key){
@@ -108,7 +113,16 @@ public class LanguageAPI {
     }
 
     public String getTranslationWithTag(UUID uuid, String key, Map<String, String> map) {
-        return TagI18N.trans(getTranslation(uuid, key),map);
+        return translateWithTag(getTranslation(uuid, key),map);
+    }
+
+    private String translateWithTag(String line, Map<String, String> map) {
+        if (line != null && !line.isEmpty()) {
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                line = line.replace(String.format("<%s>", entry.getKey()), entry.getValue());
+            }
+            return line;
+        } else return "";
     }
 
     public LocalePlayer asLocalePlayer(UUID uuid){
