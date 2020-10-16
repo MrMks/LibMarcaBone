@@ -8,59 +8,14 @@ import java.util.Collections;
 import java.util.List;
 
 public class FuncCommand extends AbstractCommand implements IChildCommand {
-    private final String name, description, usage, permission, permissionMessage;
-    private final List<String> aliases;
-    private final SenderType availableSender;
-
     private final LanguageAPI lapi;
     private final ICmdFunc func;
 
     public FuncCommand(String name, List<String> alias, SenderType type, String desc, String usage, String perm, String permMsg, LanguageAPI lapi, ICmdFunc func) {
-        this.name = name;
-        this.aliases = alias;
-        this.availableSender = type;
-        this.description = desc;
-        this.usage = usage;
-        this.permission = perm;
-        this.permissionMessage = permMsg;
+        super(name, alias, type, desc, usage, perm, permMsg);
 
         this.lapi = lapi;
         this.func = func;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public List<String> getAliases() {
-        return aliases;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public String getUsage() {
-        return usage;
-    }
-
-    @Override
-    public String getPermission() {
-        return permission;
-    }
-
-    @Override
-    public String getPermissionMessage() {
-        return permissionMessage;
-    }
-
-    @Override
-    public SenderType getSenderType() {
-        return availableSender;
     }
 
     @Override

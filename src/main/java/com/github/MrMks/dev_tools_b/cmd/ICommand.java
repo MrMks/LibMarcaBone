@@ -1,17 +1,21 @@
 package com.github.MrMks.dev_tools_b.cmd;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
 
 public interface ICommand {
     /**
+     * This value is used to identity this command, should never change.
+     * and for customize purpose, this value will not used as a command key
+     * you should add it to aliases list manually
      * @return the name of this command
      */
     String getName();
 
     /**
-     * @return aliases without name
+     * @return aliases with name
      */
     List<String> getAliases();
 
@@ -27,7 +31,7 @@ public interface ICommand {
     String getUsage();
 
     /**
-     * @return the permission this command requires
+     * @return the permission this command requires, or null to pass the check
      */
     String getPermission();
 
@@ -58,4 +62,15 @@ public interface ICommand {
 
     boolean testPermission(CommandSender sender);
     //String getHelpMessage(CommandSender sender, String label, List<String> args);
+
+    /**
+     * load properties from config file
+     */
+    void loadConfig(ConfigurationSection section);
+
+    /**
+     * save properties to config file
+     * please write you properties to the ConfigurationSection passed in
+     */
+    void saveConfig(ConfigurationSection section);
 }

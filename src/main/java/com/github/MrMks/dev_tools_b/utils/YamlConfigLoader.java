@@ -12,10 +12,11 @@ import java.io.InputStreamReader;
 import java.util.logging.Level;
 
 public class YamlConfigLoader {
+    private final Plugin plugin;
+    private final String strFile;
+    private final File configFile;
+
     private FileConfiguration newConfig;
-    private String strFile;
-    private File configFile;
-    private Plugin plugin;
 
     public YamlConfigLoader(Plugin plugin, String file){
         this.plugin = plugin;

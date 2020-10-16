@@ -11,7 +11,7 @@ public class CommandBuilder {
     private final String key;
     private List<String> alias;
     private String desc, usg, perm, permMsg;
-    private SenderType type = SenderType.ANYONE;0
+    private SenderType type = SenderType.ANYONE;
 
     public CommandBuilder(String key){
         this.key = key;
@@ -96,6 +96,9 @@ public class CommandBuilder {
     }
 
     public SubCommand build(LanguageAPI lapi, IChildCommand... subs) {
+        Validate.notNull(subs, "The subs can't be null");
+        for (IChildCommand sub : subs) Validate.notNull(sub, "Any sub can't be null");
+
         SubCommand cmd = new SubCommand(key, alias, type, desc, usg, perm, permMsg, lapi);
         cmd.add(subs);
         return cmd;
