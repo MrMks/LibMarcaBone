@@ -111,7 +111,9 @@ public abstract class AbstractCommand implements ICommand {
 
             try {
                 type = SenderType.valueOf(section.getString("senderType"));
-            } catch (IllegalArgumentException ignored){}
+            } catch (IllegalArgumentException ignored){
+                type = SenderType.NONE;
+            }
         }
     }
 

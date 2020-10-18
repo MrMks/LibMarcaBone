@@ -27,6 +27,7 @@ public class LanguageAPI {
             return load(plugin);
         else return null;
     }
+
     public static LanguageAPI load(Plugin plugin) {
         if (!registered.containsKey(plugin.getName())) {
             registered.put(plugin.getName(), new LanguageAPI(plugin));
@@ -47,7 +48,7 @@ public class LanguageAPI {
     private final LanguageFile empty = new LanguageFile("", new HashMap<>());
     private LanguageAPI(Plugin plugin){
         YamlConfigLoader loader = new YamlConfigLoader(plugin, "lang/default.yml");
-        if (!loader.exist()) loader.saveDefaultConfig();
+        loader.saveDefaultConfig();
         FileConfiguration configuration = loader.getConfig();
         if (configuration != null) {
             defaultLocale = configuration.getString(LOCALE_KEY).toLowerCase();

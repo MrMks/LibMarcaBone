@@ -8,14 +8,12 @@ import java.util.List;
 public interface ICommand {
     /**
      * This value is used to identity this command, should never change.
-     * and for customize purpose, this value will not used as a command key
-     * you should add it to aliases list manually
      * @return the name of this command
      */
     String getName();
 
     /**
-     * @return aliases with name
+     * @return aliases used to execute this command
      */
     List<String> getAliases();
 
@@ -65,12 +63,14 @@ public interface ICommand {
 
     /**
      * load properties from config file
+     * please handle the child commands' config in this method
      */
     void loadConfig(ConfigurationSection section);
 
     /**
      * save properties to config file
      * please write you properties to the ConfigurationSection passed in
+     * please handle the child commands' config in this method
      */
     void saveConfig(ConfigurationSection section);
 }

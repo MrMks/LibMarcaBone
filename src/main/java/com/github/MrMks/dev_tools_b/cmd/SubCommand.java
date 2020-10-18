@@ -4,16 +4,14 @@ import com.github.MrMks.dev_tools_b.lang.LanguageAPI;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
 
-/**
- * constructors are deprecated
- * waiting for rebuild
- */
 public class SubCommand extends AbstractCommand implements IChildCommand, IParentCommand {
     private IParentCommand parent;
     private final HashMap<String, IChildCommand> children = new HashMap<>();
+    private final HashMap<String, IChildCommand> aliasMap = new HashMap<>();
 
     private final LanguageAPI lapi;
 
@@ -25,11 +23,11 @@ public class SubCommand extends AbstractCommand implements IChildCommand, IParen
 
     @Override
     public boolean execute(CommandSender commandSender, String alias, List<String> args) {
-        if (!(getName().equalsIgnoreCase(alias) || getAliases().contains(alias))) return false;
+        if (!getAliases().contains(alias)) return false;
 
         if (testPermission(commandSender)) {
-            if (args.size() > 0 && children.containsKey(args.get(0))) {
-                return children.get(args.get(0)).execute(commandSender, args.remove(0), args);
+            if (args.size() > 0 && aliasMap.containsKey(args.get(0))) {
+                return aliasMap.get(args.get(0)).execute(commandSender, args.remove(0), args);
             } else {
                 sendMessage(
                         commandSender,
@@ -47,14 +45,38 @@ public class SubCommand extends AbstractCommand implements IChildCommand, IParen
 
     @Override
     public List<String> tabComplete(CommandSender commandSender, String s, List<String> args) {
-        if ((getName().equalsIgnoreCase(s) || getAliases().contains(s)) && testPermission(commandSender)) {
-            if (args.size() > 0 && children.containsKey(args.get(0))) {
-                return children.get(args.get(0)).tabComplete(commandSender, args.remove(0), args);
+        if (getAliases().contains(s) && testPermission(commandSender)) {
+            if (args.size() > 0 && aliasMap.containsKey(args.get(0))) {
+                return aliasMap.get(args.get(0)).tabComplete(commandSender, args.remove(0), args);
             } else {
-                return ImmutableList.copyOf(children.keySet().iterator());
+                return ImmutableList.copyOf(aliasMap.keySet().iterator());
             }
         } else {
             return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public void loadConfig(ConfigurationSection section) {
+        super.loadConfig(section);
+        if (section != null && section.isConfigurationSection("children")) {
+            ConfigurationSection cSection = section.getConfigurationSection("children");
+            for (ICommand cmd : children.values()) {
+                if (cSection.isConfigurationSection(cmd.getName())) {
+                    cmd.loadConfig(cSection.getConfigurationSection(cmd.getName()));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void saveConfig(ConfigurationSection section) {
+        super.saveConfig(section);
+        if (section != null) {
+            section = section.createSection("children");
+            for (ICommand cmd : children.values()) {
+                cmd.saveConfig(section.createSection(cmd.getName()));
+            }
         }
     }
 
@@ -76,7 +98,13 @@ public class SubCommand extends AbstractCommand implements IChildCommand, IParen
     @Override
     public void add(IChildCommand... children) {
         for (IChildCommand child : children) {
-            if (!this.children.containsKey(child.getName())) this.children.put(child.getName(), child);
+            if (!child.hasParent() && !this.children.containsKey(child.getName())) {
+                child.setParent(this);
+                this.children.put(child.getName(), child);
+                for (String alias : child.getAliases()) {
+                    if (!aliasMap.containsKey(alias)) aliasMap.put(alias, child);
+                }
+            }
         }
     }
 

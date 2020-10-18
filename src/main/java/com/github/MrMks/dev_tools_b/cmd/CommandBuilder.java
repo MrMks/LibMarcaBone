@@ -3,13 +3,13 @@ package com.github.MrMks.dev_tools_b.cmd;
 import com.github.MrMks.dev_tools_b.lang.LanguageAPI;
 import org.apache.commons.lang.Validate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class CommandBuilder {
     private final String key;
-    private List<String> alias;
+    private List<String> alias = new LinkedList<>();
     private String desc, usg, perm, permMsg;
     private SenderType type = SenderType.ANYONE;
 
@@ -39,7 +39,6 @@ public class CommandBuilder {
 
     public CommandBuilder(String key, String desc, String usg, String perm, String permMsg) {
         this.key = key;
-        this.alias = new ArrayList<>(1);
         this.desc = desc;
         this.usg = usg;
         this.perm = perm;
@@ -48,7 +47,7 @@ public class CommandBuilder {
 
     public CommandBuilder(String key, String[] alias, String desc, String usg, String perm, String permMsg){
         this.key = key;
-        this.alias = Arrays.asList(alias);
+        this.alias.addAll(Arrays.asList(alias));
         this.desc = desc;
         this.usg = usg;
         this.perm = perm;
@@ -56,7 +55,7 @@ public class CommandBuilder {
     }
 
     public CommandBuilder alias(String[] alias) {
-        this.alias = Arrays.asList(alias);
+        this.alias.addAll(Arrays.asList(alias));
         return this;
     }
 
@@ -88,6 +87,7 @@ public class CommandBuilder {
     public FuncCommand build(LanguageAPI lapi, ICmdFunc func){
         Validate.notNull(func, "The func can't be null");
 
+        if (alias.isEmpty()) alias.add(key);
         return new FuncCommand(key, alias, type, desc, usg, perm, permMsg, lapi, func);
     }
 
@@ -99,6 +99,7 @@ public class CommandBuilder {
         Validate.notNull(subs, "The subs can't be null");
         for (IChildCommand sub : subs) Validate.notNull(sub, "Any sub can't be null");
 
+        if (alias.isEmpty()) alias.add(key);
         SubCommand cmd = new SubCommand(key, alias, type, desc, usg, perm, permMsg, lapi);
         cmd.add(subs);
         return cmd;

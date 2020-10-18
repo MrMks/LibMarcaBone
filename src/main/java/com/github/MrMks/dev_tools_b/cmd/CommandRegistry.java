@@ -18,6 +18,7 @@ public class CommandRegistry {
 
     public static void register(PluginCommand pc, ICommand command) {
         if (pc != null && pc.isRegistered()) {
+            loadCommandConfig(pc.getPlugin(), command);
             if (set.add(pc)) {
                 Executor e = new Executor(findRoot(command));
                 pc.setTabCompleter(e);
@@ -28,6 +29,7 @@ public class CommandRegistry {
 
     public static void register(PluginCommand pc, IChildCommand... commands) {
         if (pc != null && pc.isRegistered()) {
+            loadCommandConfig(pc.getPlugin(), commands);
             SubCommand root = new SubCommand(pc.getName(), pc.getAliases(), SenderType.ANYONE, pc.getDescription(), pc.getUsage(), pc.getPermission(), pc.getPermissionMessage(), LanguageAPI.DEFAULT);
             if (set.add(pc)) {
                 root.add(commands);
@@ -51,6 +53,10 @@ public class CommandRegistry {
      * 实验性功能, 使用反射实现指令注册
      * 该方法可能不稳定，且存在依赖于具体实现的情况，请酌情使用
      */
+    public static void register(Plugin plugin, ICommand... subs) {
+        register(plugin, plugin.getDescription().getName(), subs);
+    }
+
     public static void register(Plugin plugin, String prefix, ICommand... subs) {
         reflectCommandMap();
         if (commandMap != null) {
@@ -73,7 +79,7 @@ public class CommandRegistry {
 
     private static void loadCommandConfig(Plugin plugin, ICommand... subs) {
         YamlConfigLoader loader = new YamlConfigLoader(plugin, "commands.yml");
-        if (!loader.exist()) loader.saveDefaultConfig();
+        loader.saveDefaultConfig();
         ConfigurationSection section = loader.getConfig();
         for (ICommand cmd : subs) loadCommandConfig0(section, cmd);
         loader.saveConfig();
@@ -81,33 +87,15 @@ public class CommandRegistry {
 
     private static void loadCommandConfig0(ConfigurationSection section, ICommand sub) {
         // load old values
-        if (section.contains(sub.getName())) {
+        if (section.isConfigurationSection(sub.getName())) {
             sub.loadConfig(section.getConfigurationSection(sub.getName()));
-            if (sub instanceof IParentCommand) {
-                String key = sub.getName() + ".children";
-                IParentCommand par = (IParentCommand) sub;
-                Collection<? extends ICommand> chds = par.getChildren();
-                if (!(chds == null) && !chds.isEmpty()) {
-                    if (section.contains(key)) {
-                        ConfigurationSection childrenSection = section.getConfigurationSection(key);
-                        for (ICommand cmd : chds) loadCommandConfig0(childrenSection, cmd);
-                    }
-                }
-            }
         }
+
         // cleanup the ConfigurationSection
         for (String key : section.getKeys(false)) section.set(key, null);
+
         // save new values
         sub.saveConfig(section.createSection(sub.getName()));
-        if (sub instanceof IParentCommand) {
-            String key = sub.getName() + ".children";
-            IParentCommand par = (IParentCommand) sub;
-            Collection<? extends ICommand> chds = par.getChildren();
-            if (!(chds == null) && !chds.isEmpty()) {
-                ConfigurationSection childrenSection = section.createSection(key);
-                for (ICommand cmd : chds) cmd.saveConfig(childrenSection.createSection(cmd.getName()));
-            }
-        }
     }
 
     private static void reflectCommandMap() {

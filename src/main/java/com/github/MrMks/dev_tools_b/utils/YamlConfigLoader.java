@@ -40,10 +40,12 @@ public class YamlConfigLoader {
         }
     }
 
-    public void saveDefaultConfig(){
-        if (!configFile.exists()) {
-            plugin.saveResource(strFile, false);
-        }
+    public void saveDefaultConfig() {
+        if (!configFile.exists()) saveDefaultConfig(false);
+    }
+
+    public void saveDefaultConfig(boolean replace) {
+        plugin.saveResource(strFile, replace);
     }
 
     public void reloadConfig(){
@@ -57,6 +59,7 @@ public class YamlConfigLoader {
         newConfig.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
     }
 
+    @Deprecated
     public boolean exist(){
         return configFile.exists();
     }

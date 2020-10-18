@@ -59,6 +59,6 @@ public class FuncCommand extends AbstractCommand implements IChildCommand {
 
     @Override
     public boolean hasParent() {
-        return parentCommand != null && parentCommand.getChild(name) == this;
+        return parentCommand != null;
     }
 }
