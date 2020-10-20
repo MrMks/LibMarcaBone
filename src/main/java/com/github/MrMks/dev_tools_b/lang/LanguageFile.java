@@ -1,14 +1,29 @@
 package com.github.MrMks.dev_tools_b.lang;
 
+import org.bukkit.configuration.ConfigurationSection;
+
 import java.util.HashMap;
 
 public class LanguageFile {
-    private final HashMap<String, String> map;
+    public static final LanguageFile EMPTY = new LanguageFile("", new HashMap<>());
+
+    private final HashMap<String, String> map = new HashMap<>();
     private final String locale;
-    public LanguageFile(String locale, HashMap<String, String> nMap) {
+    private LanguageFile(String locale, HashMap<String, String> nMap) {
         this.locale = locale;
-        this.map = new HashMap<>();
         merge(nMap);
+    }
+
+    public LanguageFile(ConfigurationSection section, String localeKey, String transKey) {
+        if (section != null) {
+            locale = section.getString(localeKey, "").toLowerCase();
+            ConfigurationSection trans = section.getConfigurationSection(transKey);
+            if (trans != null) {
+                trans.getKeys(true).forEach(key -> map.put(key, trans.getString(key)));
+            }
+        } else {
+            locale = "";
+        }
     }
 
     public String getLocale(){
@@ -29,5 +44,9 @@ public class LanguageFile {
 
     public void merge(HashMap<String, String> map){
         map.forEach(this.map::putIfAbsent);
+    }
+
+    public void merge(LanguageFile nf) {
+        if (this.locale.equals(nf.locale)) merge(nf.map);
     }
 }

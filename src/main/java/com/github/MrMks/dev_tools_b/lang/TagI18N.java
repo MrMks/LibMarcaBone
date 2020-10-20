@@ -20,7 +20,7 @@ public class TagI18N {
             Matcher matcher = pattern.matcher(line);
             if (matcher.find()) {
                 String i18nKey = "i18n_lore." + matcher.group(1);
-                if (player.hasKey(i18nKey)) {
+                if (player.has(i18nKey)) {
                     transSrc = player.trans(i18nKey);
                     String tmps = matcher.group(2);
                     if (tmps != null) {
