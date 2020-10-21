@@ -1,11 +1,13 @@
-package com.github.MrMks.dev_tools_b.lang;
+package com.github.MrMks.dev_tools_b.lang.helper;
 
+import com.github.MrMks.dev_tools_b.lang.LanguageAPI;
+import com.github.MrMks.dev_tools_b.lang.LanguageHelper;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
 import java.util.UUID;
 
-public class LocalePlayer implements LanguageHelper{
+public class LocalePlayer implements LanguageHelper {
     private final UUID uuid;
     private final LanguageAPI api;
     public LocalePlayer(UUID uuid, LanguageAPI api){
@@ -37,11 +39,11 @@ public class LocalePlayer implements LanguageHelper{
     }
 
     public String trans(String key, Map<String, String> map) {
-        return api.getTranslationWithTag(uuid, key, map);
+        return api.getTranslation(uuid, key, map);
     }
 
     @Override
     public String trans(String code, String def, Map<String, String> map) {
-        return api.getTranslationWithTag(uuid, has(code) ? code : def, map);
+        return api.getTranslation(uuid, has(code) ? code : def, map);
     }
 }

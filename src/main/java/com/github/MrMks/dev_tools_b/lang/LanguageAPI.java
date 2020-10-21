@@ -1,5 +1,7 @@
 package com.github.MrMks.dev_tools_b.lang;
 
+import com.github.MrMks.dev_tools_b.lang.helper.LocaleHelper;
+import com.github.MrMks.dev_tools_b.lang.helper.LocalePlayer;
 import com.github.MrMks.dev_tools_b.utils.YamlConfigLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -53,7 +55,7 @@ public class LanguageAPI {
 
 
     private final HashMap<String, LanguageFile> localeMap = new HashMap<>();
-    private String defaultLocale = "";
+    private String defaultLocale = EMPTY.getLocale();
 
     public LanguageAPI(Plugin plugin) {
         YamlConfigLoader loader = new YamlConfigLoader(plugin, "lang/default.yml");
@@ -89,6 +91,7 @@ public class LanguageAPI {
         }
     }
 
+    @Deprecated
     public boolean hasPlayer(UUID uuid) {
         return PM.has(uuid);
     }
@@ -98,13 +101,18 @@ public class LanguageAPI {
     }
 
     public boolean hasKey(UUID uuid, String key) {
-        return hasPlayer(uuid) && localeMap.getOrDefault(PM.get(uuid), EMPTY).has(key);
+        return PM.has(uuid) && localeMap.getOrDefault(PM.get(uuid), EMPTY).has(key);
     }
 
     public String getTranslation(String locale, String key) {
         return localeMap.getOrDefault(locale, EMPTY).getOrDefault(key, localeMap.getOrDefault(defaultLocale, EMPTY).get(key));
     }
 
+    public String getTranslation(String locale, String key, Map<String, String> map) {
+        return translateWithTag(getTranslation(locale, key), map);
+    }
+
+    @Deprecated
     public String getTranslationWithTag(String locale, String key, Map<String, String> map) {
         return translateWithTag(getTranslation(locale, key), map);
     }
@@ -113,6 +121,11 @@ public class LanguageAPI {
         return getTranslation(PM.get(uuid), key);
     }
 
+    public String getTranslation(UUID uuid, String key, Map<String, String> map) {
+        return translateWithTag(getTranslation(uuid, key),map);
+    }
+
+    @Deprecated
     public String getTranslationWithTag(UUID uuid, String key, Map<String, String> map) {
         return translateWithTag(getTranslation(uuid, key),map);
     }

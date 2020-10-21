@@ -1,4 +1,7 @@
-package com.github.MrMks.dev_tools_b.lang;
+package com.github.MrMks.dev_tools_b.lang.helper;
+
+import com.github.MrMks.dev_tools_b.lang.LanguageAPI;
+import com.github.MrMks.dev_tools_b.lang.LanguageHelper;
 
 import java.util.Map;
 
@@ -27,11 +30,11 @@ public class LocaleHelper implements LanguageHelper {
 
     @Override
     public String trans(String code, Map<String, String> map) {
-        return api.getTranslationWithTag(locale, code, map);
+        return api.getTranslation(locale, code, map);
     }
 
     @Override
     public String trans(String code, String def, Map<String, String> map) {
-        return api.hasKey(locale, code) ? api.getTranslationWithTag(locale, code, map) : api.getTranslationWithTag(locale, def, map);
+        return api.hasKey(locale, code) ? api.getTranslation(locale, code, map) : api.getTranslation(locale, def, map);
     }
 }
