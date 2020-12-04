@@ -1,125 +1,137 @@
 package com.github.MrMks.dev_tools_b.cmd;
 
 import com.github.MrMks.dev_tools_b.lang.LanguageAPI;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
 
-public class SubCommand extends AbstractCommand implements IChildCommand, IParentCommand {
-    private IParentCommand parent;
-    private final HashMap<String, IChildCommand> children = new HashMap<>();
-    private final HashMap<String, IChildCommand> aliasMap = new HashMap<>();
+public class SubCommand extends AbstractCommand implements IConfigurable {
+    private final HashMap<CommandProperty, ICommandFunction> cmdMap = new HashMap<>();
+    private final HashMap<String, CommandProperty> aliasMap = new HashMap<>();
 
-    private final LanguageAPI lapi;
+    public SubCommand() {
+        super();
+    }
 
-    public SubCommand(String name, List<String> alias, SenderType type, String desc, String usage, String perm, String permMsg, LanguageAPI lapi) {
-        super(name, alias, type, desc, usage, perm, permMsg);
-
-        this.lapi = lapi;
+    public SubCommand(LanguageAPI api) {
+        super(api);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String alias, List<String> args) {
-        if (!getAliases().contains(alias)) return false;
+    public List<String> onTabComplete(CommandSender commandSender, CommandProperty property, List<String> labels, List<String> args) {
+        if (!testPermissionSilent(commandSender, property)) return Collections.emptyList();
 
-        if (testPermission(commandSender)) {
-            if (args.size() > 0 && aliasMap.containsKey(args.get(0))) {
-                return aliasMap.get(args.get(0)).execute(commandSender, args.remove(0), args);
+        List<String> completion;
+        if (args.size() > 0) {
+            String nextLabel = args.get(0);
+            if (aliasMap.containsKey(nextLabel)) {
+                CommandProperty subProperty = aliasMap.get(nextLabel);
+                ICommandFunction subFunction = cmdMap.get(subProperty);
+
+                labels.add(args.remove(0));
+                completion = subFunction.onTabComplete(commandSender, subProperty, labels, args);
             } else {
-                sendMessage(
-                        commandSender,
-                        lapi,
-                        "command.no_sub_command",
-                        "Description: " + getDescription() + "\n" + "Usage: " + getUsage(),
-                        ImmutableMap.of("desc",getDescription(), "usage", getUsage())
-                );
+                completion = tabCompleteSelf(commandSender, property, labels, args);
             }
         } else {
-            sendMessage(commandSender, lapi, "command.no_permission", getPermissionMessage(), Collections.emptyMap());
+            completion = tabCompleteSelf(commandSender, property, labels, args);
         }
-        return true;
+
+        return completion;
     }
 
     @Override
-    public List<String> tabComplete(CommandSender commandSender, String s, List<String> args) {
-        if (getAliases().contains(s) && testPermission(commandSender)) {
-            if (args.size() > 0 && aliasMap.containsKey(args.get(0))) {
-                return aliasMap.get(args.get(0)).tabComplete(commandSender, args.remove(0), args);
+    public boolean onCommand(CommandSender commandSender, CommandProperty property, List<String> labels, List<String> args) {
+        if (!testPermissionSilent(commandSender, property)) {
+            displayPermissionMessage(commandSender, property);
+            return true;
+        }
+
+        boolean suc;
+        if (args.size() > 0) {
+            String nextLabel = args.get(0);
+            if (aliasMap.containsKey(nextLabel)) {
+                CommandProperty subProperty = aliasMap.get(nextLabel);
+                ICommandFunction subFunction = cmdMap.get(subProperty);
+
+                List<String> subLabels = new ArrayList<>(labels);
+                List<String> subArgs = new ArrayList<>(args);
+                subLabels.add(subArgs.remove(0));
+                suc = subFunction.onCommand(commandSender, subProperty, subLabels, subArgs);
             } else {
-                return ImmutableList.copyOf(aliasMap.keySet().iterator());
+                suc = commandSelf(commandSender, property, labels, args);
             }
         } else {
-            return Collections.emptyList();
+            suc = commandSelf(commandSender, property, labels, args);
         }
+
+        if (!suc) displayHelpMessage(commandSender, property, labels, args);
+
+        return suc;
     }
 
     @Override
-    public void loadConfig(ConfigurationSection section) {
-        super.loadConfig(section);
+    public void loadConfiguration(ConfigurationSection section) {
         if (section != null && section.isConfigurationSection("children")) {
             ConfigurationSection cSection = section.getConfigurationSection("children");
-            for (ICommand cmd : children.values()) {
-                if (cSection.isConfigurationSection(cmd.getName())) {
-                    cmd.loadConfig(cSection.getConfigurationSection(cmd.getName()));
+            for (Map.Entry<CommandProperty, ICommandFunction> entry : cmdMap.entrySet()) {
+                if (cSection.isConfigurationSection(entry.getKey().getName())) {
+                    cSection = cSection.getConfigurationSection(entry.getKey().getName());
+
+                    CommandProperty property = entry.getKey();
+                    property.loadConfiguration(cSection);
+                    if (!property.isShortcut() && entry.getValue() instanceof IConfigurable) {
+                        ((IConfigurable) entry.getValue()).loadConfiguration(cSection);
+                    }
                 }
             }
         }
     }
 
     @Override
-    public void saveConfig(ConfigurationSection section) {
-        super.saveConfig(section);
+    public void saveConfiguration(ConfigurationSection section) {
         if (section != null) {
             section = section.createSection("children");
-            for (ICommand cmd : children.values()) {
-                cmd.saveConfig(section.createSection(cmd.getName()));
-            }
-        }
-    }
+            for (Map.Entry<CommandProperty, ICommandFunction> entry : cmdMap.entrySet()) {
+                section = section.createSection(entry.getKey().getName());
 
-    @Override
-    public void setParent(IParentCommand parent) {
-        this.parent = parent;
-    }
-
-    @Override
-    public IParentCommand getParent() {
-        return parent;
-    }
-
-    @Override
-    public boolean hasParent() {
-        return parent != null;
-    }
-
-    @Override
-    public void add(IChildCommand... children) {
-        for (IChildCommand child : children) {
-            if (!child.hasParent() && !this.children.containsKey(child.getName())) {
-                child.setParent(this);
-                this.children.put(child.getName(), child);
-                for (String alias : child.getAliases()) {
-                    if (!aliasMap.containsKey(alias)) aliasMap.put(alias, child);
+                CommandProperty property = entry.getKey();
+                property.saveConfiguration(section);
+                if (!property.isShortcut() && entry.getValue() instanceof IConfigurable) {
+                    ((IConfigurable) entry.getValue()).saveConfiguration(section);
                 }
             }
         }
     }
 
-    @Override
-    public IChildCommand getChild(String name) {
-        return children.get(name);
-    }
+    public void register(CommandPackage pack) {
+        Map<CommandProperty, ICommandFunction> map = pack.getMap();
+        Iterator<CommandProperty> iterator = map.keySet().iterator();
+        HashSet<String> set = new HashSet<>();
+        while (iterator.hasNext()) {
+            CommandProperty property = iterator.next();
+            if (property.isValid() && !set.contains(property.getName())) {
+                property.setRegistered(true);
+                set.add(property.getName());
+            }
+            else {
+                iterator.remove();
+            }
+        }
+        for (CommandProperty property : map.keySet()) {
+            ICommandFunction function = map.get(property);
 
-    @Override
-    public Collection<IChildCommand> getChildren() {
-        return ImmutableList.copyOf(children.values());
-    }
+            cmdMap.put(property, function);
 
-    @Override
-    public boolean hasChild(String name) {
-        return children.containsKey(name);
+            aliasMap.put(property.getName(), property);
+            Iterator<String> aliasIterator = property.getAlias().iterator();
+            while (aliasIterator.hasNext()) {
+                String alias = aliasIterator.next();
+                if (!set.contains(alias)) {
+                    aliasMap.put(alias, property);
+                } else aliasIterator.remove();
+            }
+        }
     }
 }

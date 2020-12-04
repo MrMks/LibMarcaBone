@@ -6,17 +6,26 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class DevToolsB extends JavaPlugin {
+
+    private CommandManager cmdManager;
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        cmdManager = new CommandManager(this);
+    }
+
     @Override
     public void onEnable() {
-        //PlayerLocaleManager.init(this);
         getServer().getPluginManager().registerEvents(new PlayerLocaleListener(LanguageAPI.PM), this);
-        LanguageAPI.DEFAULT = new LanguageAPI(this);
-        CommandManager.register(getCommand("dtb"));
+        LanguageAPI lapi = new LanguageAPI(this);
+        LanguageAPI.DEFAULT  = lapi;
+        cmdManager.register(lapi);
     }
 
     @Override
     public void onDisable() {
-        CommandManager.unregister(getCommand("dtb"));
+        cmdManager.unregister();
         HandlerList.unregisterAll(this);
         LanguageAPI.PM.clear();
     }

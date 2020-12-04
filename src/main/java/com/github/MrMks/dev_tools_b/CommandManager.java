@@ -3,34 +3,49 @@ package com.github.MrMks.dev_tools_b;
 import com.github.MrMks.dev_tools_b.cmd.*;
 import com.github.MrMks.dev_tools_b.lang.LanguageAPI;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
+import org.bukkit.plugin.Plugin;
 
-import java.util.Collections;
 import java.util.List;
 
-public class CommandManager {
-    public static void register(PluginCommand pm) {
-        IChildCommand reloadDTBLapi =
-                new CommandBuilder("reload", "reload default command translation file", "", "devTools.reload", "")
-                .build(
-        new ICmdFunc() {
-            @Override
-            public List<String> onTabComplete(CommandSender sender, String label, List<String> args) {
-                return Collections.emptyList();
-            }
+class CommandManager {
 
-            @Override
-            public boolean onExecute(CommandSender sender, String label, List<String> args) {
-                LanguageAPI.unload("DevToolsB");
-                LanguageAPI.load("DevToolsB");
-                sender.sendMessage("§2Default command translate has been reloaded");
-                return true;
-            }
-        });
-        CommandRegistry.register(pm, new IChildCommand[]{reloadDTBLapi});
+    private final Plugin plugin;
+    public CommandManager(Plugin plugin) {
+        this.plugin = plugin;
     }
 
-    public static void unregister(PluginCommand pm) {
-        CommandRegistry.unregister(pm);
+    public void register(LanguageAPI api) {
+        CommandProperty property = new CommandProperty("reload", null,
+                "dtb.perm.reload",
+                "reload default translation files",
+                "dtb.trans.cmd.reload.desc",
+                "<__label>",
+                "dtb.trans.cmd.reload.usage",
+                "You have no permission to do this",
+                "dtb.trans.cmd.reload.permMsg");
+        ICommandFunction funcReload = new AbstractCommand(api) {
+            @Override
+            public List<String> onTabComplete(CommandSender sender, CommandProperty property, List<String> label, List<String> args) {
+                return tabCompleteSelf(sender, property, label, args);
+            }
+
+            @Override
+            public boolean onCommand(CommandSender sender, CommandProperty property, List<String> alias, List<String> args) {
+                LanguageAPI.DEFAULT.reload();
+                sender.sendMessage(translate(sender, "dtb.trans.cmd.reload.success"));
+                return true;
+            }
+        };
+
+        SubCommand root = new SubCommand(api);
+        root.register(new CommandPackage(property, funcReload));
+        CommandPackage pack = new CommandPackage();
+        pack.addCommand(new CommandProperty("dtb"), root);
+        pack.addCommand(new CommandProperty("dtbr", "dtb.perm.reload", "reload default translation files", "<__label>").markShortcut(), funcReload);
+        CommandRegistry.register(plugin, pack);
+    }
+
+    public void unregister() {
+        CommandRegistry.unregister(plugin);
     }
 }

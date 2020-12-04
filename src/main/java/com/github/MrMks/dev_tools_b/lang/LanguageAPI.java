@@ -56,8 +56,20 @@ public class LanguageAPI {
 
     private final HashMap<String, LanguageFile> localeMap = new HashMap<>();
     private String defaultLocale = EMPTY.getLocale();
+    private final Plugin plugin;
 
     public LanguageAPI(Plugin plugin) {
+        this.plugin = plugin;
+        load0();
+    }
+
+    public void reload() {
+        defaultLocale = EMPTY.getLocale();
+        localeMap.clear();
+        load0();
+    }
+
+    private void load0() {
         YamlConfigLoader loader = new YamlConfigLoader(plugin, "lang/default.yml");
         loader.saveDefaultConfig();
         FileConfiguration configuration = loader.getConfig();
