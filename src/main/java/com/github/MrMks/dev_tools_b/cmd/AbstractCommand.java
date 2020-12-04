@@ -17,8 +17,22 @@ public abstract class AbstractCommand implements ICommandFunction {
         this.lapi = api;
     }
 
+    @Override
+    public List<String> onTabComplete(CommandSender sender, CommandProperty property, List<String> label, List<String> args) {
+        if (!testPermissionSilent(sender, property)) return Collections.emptyList();
+        else return tabCompleteSelf(sender, property, label, args);
+    }
+
     protected List<String> tabCompleteSelf(CommandSender sender, CommandProperty property, List<String> labels, List<String> args) {
         return Collections.emptyList();
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, CommandProperty property, List<String> alias, List<String> args) {
+        if (!testPermissionSilent(sender, property)) {
+            displayPermissionMessage(sender, property);
+            return true;
+        } else return commandSelf(sender, property, alias, args);
     }
 
     protected boolean commandSelf(CommandSender sender, CommandProperty property, List<String> labels, List<String> args) {
@@ -68,6 +82,10 @@ public abstract class AbstractCommand implements ICommandFunction {
     }
 
     protected String translate(CommandSender sender, String str) {
-        return lapi == null ? str : lapi.getTranslation(sender instanceof Player ? ((Player) sender).getUniqueId() : null, str);
+        return translate(sender, str, str);
+    }
+
+    protected String translate(CommandSender sender, String str, String def) {
+        return lapi == null ? def : lapi.getTranslation(sender instanceof Player ? ((Player) sender).getUniqueId() : null, str);
     }
 }

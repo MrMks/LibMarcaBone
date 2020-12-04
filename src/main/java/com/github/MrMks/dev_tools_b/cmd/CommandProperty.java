@@ -31,7 +31,11 @@ public final class CommandProperty implements IConfigurable {
     }
 
     public CommandProperty(String name, String perm, String desc, String usg) {
-        this(name, null, perm, desc, usg, "You have no permission to do this");
+        this(name, null, perm, desc, usg);
+    }
+
+    public CommandProperty(String name, List<String> aliases, String permission, String desc, String usage){
+        this(name, aliases, permission, desc, usage, "You have no permission to do this");
     }
 
     public CommandProperty(String name, List<String> aliases, String permission, String desc, String usg, String permMsg) {
