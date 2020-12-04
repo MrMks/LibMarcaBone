@@ -43,15 +43,13 @@ final class CommandWrapper extends Command implements PluginIdentifiableCommand 
             return true;
         }
 
-        boolean suc = false;
         List<String> list = Arrays.asList(args);
         try {
-            suc = function.onCommand(sender, property, new ArrayList<>(Collections.singletonList(commandLabel)), new ArrayList<>(list));
+            return function.onCommand(sender, property, new ArrayList<>(Collections.singletonList(commandLabel)), new ArrayList<>(list));
         } catch (Throwable ex) {
             throw new CommandException("Unhandled exception executing command '" + commandLabel + "' in plugin " + plugin.getDescription().getFullName(), ex);
         }
 
-        return suc;
     }
 
     @Override
@@ -60,7 +58,7 @@ final class CommandWrapper extends Command implements PluginIdentifiableCommand 
         Validate.notNull(args, "Arguments cannot be null");
         Validate.notNull(alias, "Alias cannot be null");
 
-        List<String> list = null;
+        List<String> list;
         try {
             list = function.onTabComplete(sender, property, new ArrayList<>(Collections.singletonList(alias)), new ArrayList<>(Arrays.asList(args)));
         } catch (Throwable ex) {

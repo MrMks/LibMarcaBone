@@ -19,7 +19,7 @@ class CommandManager {
                 "dtb.perm.reload",
                 "reload default translation files",
                 "dtb.trans.cmd.reload.desc",
-                "<__label>",
+                "<command>",
                 "dtb.trans.cmd.reload.usage",
                 "You have no permission to do this",
                 "dtb.trans.cmd.reload.permMsg");
@@ -41,10 +41,11 @@ class CommandManager {
         root.register(new CommandPackage(property, funcReload));
         CommandPackage pack = new CommandPackage();
         pack.addCommand(new CommandProperty("dtb"), root);
-        pack.addCommand(new CommandProperty("dtbr", "dtb.perm.reload", "reload default translation files", "<__label>").markShortcut(), funcReload);
+        pack.addCommand(new CommandProperty("dtbr", "dtb.perm.reload", "reload default translation files", "<command>").markShortcut(), funcReload);
         CommandRegistry.register(plugin, pack);
     }
 
+    @Deprecated
     public void unregister() {
         CommandRegistry.unregister(plugin);
     }

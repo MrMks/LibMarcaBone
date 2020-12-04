@@ -25,7 +25,7 @@ public class DevToolsB extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        cmdManager.unregister();
+        //cmdManager.unregister();
         HandlerList.unregisterAll(this);
         LanguageAPI.PM.clear();
     }

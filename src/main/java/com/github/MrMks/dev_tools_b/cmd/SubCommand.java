@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SubCommand extends AbstractCommand implements IConfigurable {
     private final HashMap<CommandProperty, ICommandFunction> cmdMap = new HashMap<>();
@@ -23,7 +24,7 @@ public class SubCommand extends AbstractCommand implements IConfigurable {
         if (!testPermissionSilent(commandSender, property)) return Collections.emptyList();
 
         List<String> completion;
-        if (args.size() > 0) {
+        if (args.size() > 1) {
             String nextLabel = args.get(0);
             if (aliasMap.containsKey(nextLabel)) {
                 CommandProperty subProperty = aliasMap.get(nextLabel);
@@ -35,7 +36,9 @@ public class SubCommand extends AbstractCommand implements IConfigurable {
                 completion = tabCompleteSelf(commandSender, property, labels, args);
             }
         } else {
-            completion = tabCompleteSelf(commandSender, property, labels, args);
+            if (args.size() == 0 || args.get(0).length() == 0) completion = new ArrayList<>(aliasMap.keySet());
+            else completion = aliasMap.keySet().stream().filter(s -> s.startsWith(args.get(0))).collect(Collectors.toList());
+            completion.sort(String.CASE_INSENSITIVE_ORDER);
         }
 
         return completion;
@@ -66,7 +69,7 @@ public class SubCommand extends AbstractCommand implements IConfigurable {
             suc = commandSelf(commandSender, property, labels, args);
         }
 
-        if (!suc) displayHelpMessage(commandSender, property, labels, args);
+        if (!suc) displayHelpMessage(commandSender, property, labels);
 
         return suc;
     }
@@ -94,12 +97,12 @@ public class SubCommand extends AbstractCommand implements IConfigurable {
         if (section != null) {
             section = section.createSection("children");
             for (Map.Entry<CommandProperty, ICommandFunction> entry : cmdMap.entrySet()) {
-                section = section.createSection(entry.getKey().getName());
+                ConfigurationSection cSection = section.createSection(entry.getKey().getName());
 
                 CommandProperty property = entry.getKey();
-                property.saveConfiguration(section);
+                property.saveConfiguration(cSection);
                 if (!property.isShortcut() && entry.getValue() instanceof IConfigurable) {
-                    ((IConfigurable) entry.getValue()).saveConfiguration(section);
+                    ((IConfigurable) entry.getValue()).saveConfiguration(cSection);
                 }
             }
         }

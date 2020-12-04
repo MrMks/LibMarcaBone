@@ -1,17 +1,20 @@
 package com.github.MrMks.dev_tools_b.cmd;
 
-import com.github.MrMks.dev_tools_b.utils.YamlConfigLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class CommandRegistry {
     private static CommandMap commandMap;
@@ -24,39 +27,44 @@ public class CommandRegistry {
             HashMap<CommandProperty, ICommandFunction> map = pack.getMap();
             List<Command> commands = new ArrayList<>();
             for (CommandProperty property : map.keySet()) {
-                if (property.isValid()) commands.add(new CommandWrapper(plugin, property, map.get(property)));
+                if (property.isValid() && property.isEnable()) commands.add(new CommandWrapper(plugin, property, map.get(property)));
             }
             commandMap.registerAll(plugin.getDescription().getName(), commands);
         }
     }
 
+    @Deprecated
     public static void unregister(Plugin plugin) {
         reflectCommandMap();
+
     }
 
     private static void loadCommandConfig(Plugin plugin, CommandPackage commandPackage) {
-        YamlConfigLoader loader = new YamlConfigLoader(plugin, "commands.yml");
-        loader.saveDefaultConfig();
-        ConfigurationSection section = loader.getConfig();
+        YamlConfiguration yml = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), "commands.yml"));
 
         for (Map.Entry<CommandProperty, ICommandFunction> entry : commandPackage.getMap().entrySet()) {
-            if (section.isConfigurationSection(entry.getKey().getName())) {
-                section = section.getConfigurationSection(entry.getKey().getName());
-                entry.getKey().loadConfiguration(section);
+            if (yml.isConfigurationSection(entry.getKey().getName())) {
+                ConfigurationSection cSection = yml.getConfigurationSection(entry.getKey().getName());
+                entry.getKey().loadConfiguration(cSection);
                 if (entry.getValue() instanceof IConfigurable && !entry.getKey().isShortcut()) {
-                    ((IConfigurable) entry.getValue()).loadConfiguration(section);
+                    ((IConfigurable) entry.getValue()).loadConfiguration(cSection);
                 }
             }
         }
 
         for (Map.Entry<CommandProperty, ICommandFunction> entry : commandPackage.getMap().entrySet()) {
-            entry.getKey().saveConfiguration(section);
+            ConfigurationSection cSection = yml.createSection(entry.getKey().getName());
+            entry.getKey().saveConfiguration(cSection);
             if (entry.getValue() instanceof IConfigurable && !entry.getKey().isShortcut()) {
-                ((IConfigurable) entry.getValue()).saveConfiguration(section);
+                ((IConfigurable) entry.getValue()).saveConfiguration(cSection);
             }
         }
 
-        loader.saveConfig();
+        try {
+            yml.save(new File(plugin.getDataFolder(), "commands.yml"));
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.SEVERE, "Can't save command configs", e);
+        }
     }
 
     private static void reflectCommandMap() {

@@ -24,6 +24,8 @@ public final class CommandProperty implements IConfigurable {
     private boolean registered = false;
     private boolean isShortcut = false;
 
+    private boolean enable = true;
+
     public CommandProperty(String name) {
         this(name, "", "", "");
     }
@@ -59,6 +61,10 @@ public final class CommandProperty implements IConfigurable {
 
     public boolean isValid() {
         return !registered && name != null;
+    }
+
+    public boolean isEnable() {
+        return enable;
     }
 
     public String getName() {
@@ -130,6 +136,7 @@ public final class CommandProperty implements IConfigurable {
     private final static String USAGE_KEY = "usageKey";
     private final static String PERMISSION_MESSAGE = "permissionMessage";
     private final static String PERMISSION_MESSAGE_KEY = "permissionMessageKey";
+    private final static String ENABLE = "enable";
 
     @Override
     public void loadConfiguration(ConfigurationSection section) {
@@ -147,13 +154,15 @@ public final class CommandProperty implements IConfigurable {
             usageKey = getStringConfig(section, USAGE_KEY, usageKey);
             permissionMessage = getStringConfig(section, PERMISSION_MESSAGE, permissionMessage);
             permissionMessageKey = getStringConfig(section, PERMISSION_MESSAGE_KEY, permissionMessageKey);
+
+            enable = section.getBoolean(ENABLE, enable);
         }
     }
 
     private String getStringConfig(ConfigurationSection section, String key, String def) {
         return (section == null
                 || key == null
-                || section.isString(key)
+                || !section.isString(key)
                 || section.getString(key).isEmpty()) ? def : section.getString(key);
     }
 
@@ -178,6 +187,8 @@ public final class CommandProperty implements IConfigurable {
                 section.set(PERMISSION_MESSAGE, getPermissionMessage());
             if (hasPermissionMessageKey())
                 section.set(PERMISSION_MESSAGE_KEY, getPermissionMessageKey());
+
+            section.set(ENABLE, enable);
         }
     }
 
@@ -186,6 +197,7 @@ public final class CommandProperty implements IConfigurable {
         return this;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isShortcut() {
         return isShortcut;
     }

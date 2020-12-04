@@ -91,6 +91,7 @@ public class LanguageAPI {
                 }
             }
         } else {
+            if (path.getName().equals("default.yml")) return;
             FileConfiguration cfg = YamlConfiguration.loadConfiguration(path);
             LanguageFile file = new LanguageFile(cfg, LOCALE_KEY, TRANSLATION_KEY);
             if (localeMap.containsKey(file.getLocale())) {
@@ -149,15 +150,6 @@ public class LanguageAPI {
             }
             return line;
         } else return "";
-    }
-
-    /**
-     * @see #helper(UUID)
-     * @see #helper(Player)
-     */
-    @Deprecated
-    public LocalePlayer asLocalePlayer(UUID uuid){
-        return new LocalePlayer(uuid, this);
     }
 
     public LanguageHelper helper(String locale) {

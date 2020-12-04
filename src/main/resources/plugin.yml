@@ -1,11 +1,6 @@
 name: DevToolsB
 main: com.github.MrMks.dev_tools_b.DevToolsB
 version: ${version}
-commands:
-  dtb:
-    description: base command for plugin DevToolsB
-    usage: '<sub> [args]'
-    permission: devTools.*
 permissions:
   devTools.reload:
     default: op

@@ -1,5 +1,7 @@
 locale: us_en
 translation:
+  dtb.trans.cmd.reload.success: 'Default language file has been reload'
+  dtb.trans.cmd.dtb.desc: 'Base command of plugin DevToolsB'
   command:
     no_permission: §cYou have no permission to use this command
     alias_list: '§7You can use these aliases for command "<name>": <aliases>'

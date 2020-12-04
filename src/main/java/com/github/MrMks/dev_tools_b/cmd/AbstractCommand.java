@@ -25,6 +25,7 @@ public abstract class AbstractCommand implements ICommandFunction {
         return false;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     protected boolean testPermissionSilent(CommandSender sender, CommandProperty property) {
         if (!property.hasPermission()) return true;
 
@@ -44,23 +45,17 @@ public abstract class AbstractCommand implements ICommandFunction {
         }
     }
 
-    protected void displayHelpMessage(CommandSender sender, CommandProperty property, List<String> label, List<String> args) {
+    protected void displayHelpMessage(CommandSender sender, CommandProperty property, List<String> label) {
         String usage = property.hasUsageKey() ? translate(sender, property.getUsageKey()) : property.getUsage();
         String desc = property.hasDescriptionKey() ? translate(sender, property.getDescriptionKey()) : property.getDescription();
 
         StringBuilder builder = new StringBuilder();
         for (String l : label) builder.append(l).append(' ');
-        builder.deleteCharAt(builder.length() - 1);
-        builder.insert(0, "/");
+        if (builder.length() > 0) builder.deleteCharAt(builder.length() - 1);
         String fullLabel = builder.toString();
 
-        builder = new StringBuilder();
-        for (String a : args) builder.append(a).append(' ');
-        builder.deleteCharAt(builder.length() - 1);
-        String fullArg = builder.toString();
-
         if (usage != null && usage.length() > 0) {
-            for (String line : fullLabel.replace("<__label>", fullLabel).replace("<__args>", fullArg).split("\n")) {
+            for (String line : usage.replace("<command>", fullLabel).split("\n")) {
                 sender.sendMessage(line);
             }
         }
