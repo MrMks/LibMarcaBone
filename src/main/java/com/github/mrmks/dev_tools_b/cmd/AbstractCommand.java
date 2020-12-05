@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class AbstractCommand implements ICommandFunction {
     private final LanguageAPI lapi;
@@ -50,7 +51,8 @@ public abstract class AbstractCommand implements ICommandFunction {
     }
 
     protected void displayPermissionMessage(CommandSender sender, CommandProperty property) {
-        String permMsg = property.hasPermissionMessageKey() ? translate(sender, property.getPermissionMessageKey()) : property.getPermissionMessage();
+        String permMsg = property.hasPermissionMessageKey() ?
+                translate(sender, property.getPermissionMessageKey(), property.getPermissionMessage()) : property.getPermissionMessage();
 
         if (permMsg != null && permMsg.length() != 0) {
             for (String line : permMsg.replace("<permission>", property.getPermission()).split("\n")) {
@@ -60,8 +62,8 @@ public abstract class AbstractCommand implements ICommandFunction {
     }
 
     protected void displayHelpMessage(CommandSender sender, CommandProperty property, List<String> label) {
-        String usage = property.hasUsageKey() ? translate(sender, property.getUsageKey()) : property.getUsage();
-        String desc = property.hasDescriptionKey() ? translate(sender, property.getDescriptionKey()) : property.getDescription();
+        String usage = property.hasUsageKey() ? translate(sender, property.getUsageKey(), property.getUsage()) : property.getUsage();
+        String desc = property.hasDescriptionKey() ? translate(sender, property.getDescriptionKey(), property.getDescription()) : property.getDescription();
 
         StringBuilder builder = new StringBuilder();
         for (String l : label) builder.append(l).append(' ');
@@ -85,7 +87,9 @@ public abstract class AbstractCommand implements ICommandFunction {
         return translate(sender, str, str);
     }
 
-    protected String translate(CommandSender sender, String str, String def) {
-        return lapi == null ? def : lapi.getTranslation(sender instanceof Player ? ((Player) sender).getUniqueId() : null, str);
+    protected String translate(CommandSender sender, String key, String def) {
+        UUID uuid = sender instanceof Player ? ((Player) sender).getUniqueId() : null;
+        return lapi == null ? def :
+                lapi.hasKey(uuid, key) ? lapi.getTranslation(uuid, key) : def;
     }
 }

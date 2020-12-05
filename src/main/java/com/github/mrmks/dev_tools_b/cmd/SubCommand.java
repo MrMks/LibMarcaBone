@@ -61,7 +61,7 @@ public class SubCommand extends AbstractCommand implements IConfigurable {
                 List<String> subLabels = new ArrayList<>(labels);
                 List<String> subArgs = new ArrayList<>(args);
                 subLabels.add(subArgs.remove(0));
-                suc = subFunction.onCommand(commandSender, subProperty, subLabels, subArgs);
+                return subFunction.onCommand(commandSender, subProperty, subLabels, subArgs);
             } else {
                 suc = commandSelf(commandSender, property, labels, args);
             }

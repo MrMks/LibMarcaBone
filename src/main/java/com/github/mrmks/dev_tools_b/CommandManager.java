@@ -32,7 +32,7 @@ class CommandManager {
             @Override
             public boolean onCommand(CommandSender sender, CommandProperty property, List<String> alias, List<String> args) {
                 LanguageAPI.DEFAULT.reload();
-                sender.sendMessage(translate(sender, "dtb.trans.cmd.reload.success"));
+                sender.sendMessage(translate(sender, "dtb.trans.cmd.reload.success", "Default language file has been reloaded"));
                 return true;
             }
         };
