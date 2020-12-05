@@ -1,4 +1,4 @@
-package com.github.MrMks.dev_tools_b.utils;
+package com.github.mrmks.dev_tools_b.utils;
 
 import com.google.common.base.Charsets;
 import org.bukkit.configuration.file.FileConfiguration;

@@ -1,4 +1,4 @@
-package com.github.MrMks.dev_tools_b.lang;
+package com.github.mrmks.dev_tools_b.lang;
 
 import org.bukkit.configuration.ConfigurationSection;
 

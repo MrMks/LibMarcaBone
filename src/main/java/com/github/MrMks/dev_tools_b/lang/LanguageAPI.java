@@ -1,8 +1,8 @@
-package com.github.MrMks.dev_tools_b.lang;
+package com.github.mrmks.dev_tools_b.lang;
 
-import com.github.MrMks.dev_tools_b.lang.helper.LocaleHelper;
-import com.github.MrMks.dev_tools_b.lang.helper.LocalePlayer;
-import com.github.MrMks.dev_tools_b.utils.YamlConfigLoader;
+import com.github.mrmks.dev_tools_b.lang.helper.LocaleHelper;
+import com.github.mrmks.dev_tools_b.lang.helper.LocalePlayer;
+import com.github.mrmks.dev_tools_b.utils.YamlConfigLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.github.MrMks.dev_tools_b.lang.LanguageFile.EMPTY;
+import static com.github.mrmks.dev_tools_b.lang.LanguageFile.EMPTY;
 
 public class LanguageAPI {
     @Deprecated

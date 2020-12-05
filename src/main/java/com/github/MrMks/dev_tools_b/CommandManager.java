@@ -1,7 +1,7 @@
-package com.github.MrMks.dev_tools_b;
+package com.github.mrmks.dev_tools_b;
 
-import com.github.MrMks.dev_tools_b.cmd.*;
-import com.github.MrMks.dev_tools_b.lang.LanguageAPI;
+import com.github.mrmks.dev_tools_b.cmd.*;
+import com.github.mrmks.dev_tools_b.lang.LanguageAPI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
