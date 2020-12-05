@@ -1,4 +1,4 @@
-package com.github.MrMks.dev_tools_b.cmd;
+package com.github.mrmks.dev_tools_b.cmd;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.command.Command;

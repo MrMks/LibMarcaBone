@@ -1,5 +1,5 @@
 name: DevToolsB
-main: com.github.MrMks.dev_tools_b.DevToolsB
+main: com.github.mrmks.dev_tools_b.DevToolsB
 version: ${version}
 permissions:
   devTools.reload:
