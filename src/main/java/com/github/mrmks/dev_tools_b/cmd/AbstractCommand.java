@@ -83,7 +83,7 @@ public abstract class AbstractCommand implements ICommandFunction {
         }
     }
 
-    protected void displayIllegalArgument(CommandSender sender, String key, String def, List<String> args) {
+    protected void displayArgumentMessage(CommandSender sender, String key, String def, List<String> args) {
         String res = translate(sender, key, def);
         for (int i = 0; i < args.size(); i++) {
             res = res.replace("<arg" + (i + 1) + ">", args.get(i));
