@@ -10,19 +10,18 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 public class CommandRegistry {
     private static CommandMap commandMap;
     private static boolean reflected = false;
 
+    private static final HashSet<String> registeredPlugins = new HashSet<>();
+
     public static void register(Plugin plugin, CommandPackage pack) {
         reflectCommandMap();
-        if (commandMap != null) {
+        if (commandMap != null && !registeredPlugins.contains(plugin.getName())) {
             loadCommandConfig(plugin, pack);
             HashMap<CommandProperty, ICommandFunction> map = pack.getMap();
             List<Command> commands = new ArrayList<>();
@@ -30,13 +29,13 @@ public class CommandRegistry {
                 if (property.isValid() && property.isEnable()) commands.add(new CommandWrapper(plugin, property, map.get(property)));
             }
             commandMap.registerAll(plugin.getDescription().getName(), commands);
+            registeredPlugins.add(plugin.getName());
         }
     }
 
     @Deprecated
     public static void unregister(Plugin plugin) {
-        reflectCommandMap();
-
+        //reflectCommandMap();
     }
 
     private static void loadCommandConfig(Plugin plugin, CommandPackage commandPackage) {

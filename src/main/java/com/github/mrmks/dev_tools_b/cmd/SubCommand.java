@@ -26,7 +26,7 @@ public class SubCommand extends AbstractCommand implements IConfigurable {
         List<String> completion;
         if (args.size() > 1) {
             String nextLabel = args.get(0);
-            if (aliasMap.containsKey(nextLabel)) {
+            if (aliasMap.containsKey(nextLabel) && aliasMap.get(nextLabel).isEnable()) {
                 CommandProperty subProperty = aliasMap.get(nextLabel);
                 ICommandFunction subFunction = cmdMap.get(subProperty);
 
@@ -37,7 +37,10 @@ public class SubCommand extends AbstractCommand implements IConfigurable {
             }
         } else {
             if (args.size() == 0 || args.get(0).length() == 0) completion = new ArrayList<>(aliasMap.keySet());
-            else completion = aliasMap.keySet().stream().filter(s -> s.startsWith(args.get(0))).collect(Collectors.toList());
+            else completion = aliasMap.entrySet().stream()
+                    .filter(e-> e.getValue().isEnable() && e.getKey().startsWith(args.get(0)))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
             completion.sort(String.CASE_INSENSITIVE_ORDER);
         }
 
@@ -54,7 +57,7 @@ public class SubCommand extends AbstractCommand implements IConfigurable {
         boolean suc;
         if (args.size() > 0) {
             String nextLabel = args.get(0);
-            if (aliasMap.containsKey(nextLabel)) {
+            if (aliasMap.containsKey(nextLabel) && aliasMap.get(nextLabel).isEnable()) {
                 CommandProperty subProperty = aliasMap.get(nextLabel);
                 ICommandFunction subFunction = cmdMap.get(subProperty);
 
