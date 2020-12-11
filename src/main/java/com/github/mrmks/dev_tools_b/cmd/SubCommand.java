@@ -78,6 +78,16 @@ public class SubCommand extends AbstractCommand implements IConfigurable {
     }
 
     @Override
+    public void loadDefaultConfiguration() {
+        for (Map.Entry<CommandProperty, ICommandFunction> entry : cmdMap.entrySet()) {
+            entry.getKey().loadDefaultConfiguration();
+            if (entry.getValue() instanceof IConfigurable) {
+                ((IConfigurable) entry.getValue()).loadDefaultConfiguration();
+            }
+        }
+    }
+
+    @Override
     public void loadConfiguration(ConfigurationSection section) {
         if (section != null && section.isConfigurationSection("children")) {
             ConfigurationSection cSection = section.getConfigurationSection("children");

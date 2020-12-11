@@ -1,5 +1,6 @@
 package com.github.mrmks.dev_tools_b.cmd;
 
+import com.github.mrmks.dev_tools_b.utils.AlternativeProperty;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -9,20 +10,21 @@ import java.util.stream.Collectors;
 
 public final class CommandProperty implements IConfigurable {
     private final String name;
-    private List<String> alias;
+    private final AlternativeProperty<List<String>> alias;
     private List<String> activeAliases;
-    private String permission;
+    private final AlternativeProperty<String> permission;
 
-    private String description;
-    private String usage;
-    private String permissionMessage;
+    private final AlternativeProperty<String> description;
+    private final AlternativeProperty<String> usage;
+    private final AlternativeProperty<String> permissionMessage;
 
-    private String descriptionKey;
-    private String usageKey;
-    private String permissionMessageKey;
+    private final AlternativeProperty<String> descriptionKey;
+    private final AlternativeProperty<String> usageKey;
+    private final AlternativeProperty<String> permissionMessageKey;
 
     private boolean registered = false;
     private boolean isShortcut = false;
+    private boolean isConfigLoaded = false;
 
     private boolean enable = true;
 
@@ -45,21 +47,29 @@ public final class CommandProperty implements IConfigurable {
     public CommandProperty(String name, List<String> aliases, String perm, String desc, String descKey, String usg, String usgKey, String permMsg, String permMsgKey) {
         if (name == null || name.isEmpty()) {
             this.name = null;
+            this.alias = null;
+            this.permission = null;
+            this.description = null;
+            this.usage = null;
+            this.permissionMessage = null;
+            this.descriptionKey = null;
+            this.usageKey = null;
+            this.permissionMessageKey = null;
         } else {
             this.name = name;
             if (aliases == null || aliases.isEmpty() || aliases.stream().allMatch(s->s == null || s.isEmpty())) {
-                alias = Collections.emptyList();
+                alias = new AlternativeProperty<>(Collections.emptyList());
             } else {
-                alias = aliases.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.toList());
+                alias = new AlternativeProperty<>(aliases.stream().filter(s -> s != null && !s.isEmpty()).collect(Collectors.toList()));
             }
-            this.activeAliases = new ArrayList<>(alias);
-            this.permission = perm;
-            this.description = desc == null ? "" : desc;
-            this.descriptionKey = descKey;
-            this.usage = usg == null ? "" : usg;
-            this.usageKey = usgKey;
-            this.permissionMessage = permMsg == null ? "" : permMsg;
-            this.permissionMessageKey = permMsgKey;
+            this.activeAliases = new ArrayList<>(alias.getValue());
+            this.permission = new AlternativeProperty<>(perm);
+            this.description = new AlternativeProperty<>(desc == null ? "" : desc);
+            this.descriptionKey = new AlternativeProperty<>(descKey);
+            this.usage = new AlternativeProperty<>(usg == null ? "" : usg);
+            this.usageKey = new AlternativeProperty<>(usgKey);
+            this.permissionMessage = new AlternativeProperty<>(permMsg == null ? "" : permMsg);
+            this.permissionMessageKey = new AlternativeProperty<>(permMsgKey);
         }
     }
 
@@ -80,53 +90,53 @@ public final class CommandProperty implements IConfigurable {
     }
 
     public String getDescription() {
-        return description == null ? "" : description;
+        return description.getValue() == null ? "" : description.getValue();
     }
 
     public String getUsage() {
-        return usage == null ? "" : usage;
+        return usage.getValue() == null ? "" : usage.getValue();
     }
 
     public boolean hasPermission() {
-        return permission != null && !permission.isEmpty();
+        return permission.getValue() != null && !permission.getValue().isEmpty();
     }
 
     public String getPermission() {
-        return permission;
+        return permission.getValue();
     }
 
     public String getPermissionMessage() {
-        return permissionMessage == null ? "" : permissionMessage;
+        return permissionMessage.getValue() == null ? "" : permissionMessage.getValue();
     }
 
     public boolean hasDescriptionKey() {
-        return descriptionKey != null && !descriptionKey.isEmpty();
+        return descriptionKey.getValue() != null && !descriptionKey.getValue().isEmpty();
     }
 
     public String getDescriptionKey() {
-        return descriptionKey;
+        return descriptionKey.getValue();
     }
 
     public boolean hasUsageKey() {
-        return usageKey != null && !usageKey.isEmpty();
+        return usageKey.getValue() != null && !usageKey.getValue().isEmpty();
     }
 
     public String getUsageKey() {
-        return usageKey;
+        return usageKey.getValue();
     }
 
     public boolean hasPermissionMessageKey() {
-        return permissionMessageKey != null && !permissionMessageKey.isEmpty();
+        return permissionMessageKey.getValue() != null && !permissionMessageKey.getValue().isEmpty();
     }
 
     public String getPermissionMessageKey() {
-        return permissionMessageKey;
+        return permissionMessageKey.getValue();
     }
 
     public void setRegistered(boolean flag) {
         if (registered != flag) {
             if (registered) {
-                this.activeAliases = new ArrayList<>(alias);
+                this.activeAliases = new ArrayList<>(alias.getValue());
             }
             this.registered = flag;
         }
@@ -143,23 +153,39 @@ public final class CommandProperty implements IConfigurable {
     private final static String ENABLE = "enable";
 
     @Override
+    public void loadDefaultConfiguration() {
+        alias.removeAlter();
+        permission.removeAlter();
+        description.removeAlter();
+        descriptionKey.removeAlter();
+        usage.removeAlter();
+        usageKey.removeAlter();
+        permissionMessage.removeAlter();
+        permissionMessageKey.removeAlter();
+
+        enable = true;
+        isConfigLoaded = false;
+    }
+
+    @Override
     public void loadConfiguration(ConfigurationSection section) {
         if (section != null) {
             List<String> tmp = section.getStringList(ALIASES);
             if (tmp != null) {
-                alias = tmp;
+                alias.setAlter(tmp);
                 activeAliases.clear();
-                activeAliases.addAll(alias);
+                activeAliases.addAll(alias.getValue());
             }
-            permission = getStringConfig(section, PERMISSION, permission);
-            description = getStringConfig(section, DESCRIPTION, description);
-            descriptionKey = getStringConfig(section, DESCRIPTION_KEY, descriptionKey);
-            usage = getStringConfig(section, USAGE, usage);
-            usageKey = getStringConfig(section, USAGE_KEY, usageKey);
-            permissionMessage = getStringConfig(section, PERMISSION_MESSAGE, permissionMessage);
-            permissionMessageKey = getStringConfig(section, PERMISSION_MESSAGE_KEY, permissionMessageKey);
+            permission.setAlter(getStringConfig(section, PERMISSION, permission.getValue()));
+            description.setAlter(getStringConfig(section, DESCRIPTION, description.getValue()));
+            descriptionKey.setAlter(getStringConfig(section, DESCRIPTION_KEY, descriptionKey.getValue()));
+            usage.setAlter(getStringConfig(section, USAGE, usage.getValue()));
+            usageKey.setAlter(getStringConfig(section, USAGE_KEY, usageKey.getValue()));
+            permissionMessage.setAlter(getStringConfig(section, PERMISSION_MESSAGE, permissionMessage.getValue()));
+            permissionMessageKey.setAlter(getStringConfig(section, PERMISSION_MESSAGE_KEY, permissionMessageKey.getValue()));
 
             enable = section.getBoolean(ENABLE, enable);
+            isConfigLoaded = true;
         }
     }
 
@@ -173,7 +199,7 @@ public final class CommandProperty implements IConfigurable {
     @Override
     public void saveConfiguration(ConfigurationSection section) {
         if (section != null) {
-            if (alias != null && !alias.isEmpty())
+            if (alias.getValue() != null && !alias.getValue().isEmpty())
                 section.set(ALIASES, alias);
 
             if (hasPermission())
