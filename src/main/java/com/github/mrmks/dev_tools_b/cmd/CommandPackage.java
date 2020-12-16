@@ -22,7 +22,7 @@ public final class CommandPackage {
 
     public void addCommands(CommandPackage pack) {
         for (Map.Entry<CommandProperty, ICommandFunction> entry : pack.getMap().entrySet()) {
-            map.put(entry.getKey(), entry.getValue());
+            addCommand(entry.getKey(), entry.getValue());
         }
     }
 
