@@ -24,7 +24,6 @@ public final class CommandProperty implements IConfigurable {
 
     private boolean registered = false;
     private boolean isShortcut = false;
-    private boolean isConfigLoaded = false;
 
     private boolean enable = true;
 
@@ -164,7 +163,6 @@ public final class CommandProperty implements IConfigurable {
         permissionMessageKey.removeAlter();
 
         enable = true;
-        isConfigLoaded = false;
     }
 
     @Override
@@ -185,7 +183,6 @@ public final class CommandProperty implements IConfigurable {
             permissionMessageKey.setAlter(getStringConfig(section, PERMISSION_MESSAGE_KEY, permissionMessageKey.getValue()));
 
             enable = section.getBoolean(ENABLE, enable);
-            isConfigLoaded = true;
         }
     }
 
