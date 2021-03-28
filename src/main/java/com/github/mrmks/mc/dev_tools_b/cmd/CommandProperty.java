@@ -1,5 +1,6 @@
 package com.github.mrmks.mc.dev_tools_b.cmd;
 
+import com.github.mrmks.mc.dev_tools_b.cmd.utils.UsageBuild;
 import com.github.mrmks.mc.dev_tools_b.utils.AlternativeProperty;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -8,7 +9,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class CommandProperty implements IConfigurable {
+/**
+ * This class complete almost every valid check by now, this will be changed in future.
+ * Any way, this will always be the best way to construct properties of a command.
+ */
+public final class CommandProperty implements IConfigurable, ICommandProperty {
     private final String name;
     private final AlternativeProperty<List<String>> alias;
     private List<String> activeAliases;
@@ -22,28 +27,39 @@ public final class CommandProperty implements IConfigurable {
     private final AlternativeProperty<String> usageKey;
     private final AlternativeProperty<String> permissionMessageKey;
 
+    /**
+     *  shortcuts added by method {@link #addShortcut(ShortcutProperty)} will be the default value.
+     *  values loaded by {@link #loadConfiguration(ConfigurationSection)} will be alternative value.
+      */
+    private final AlternativeProperty<List<ShortcutProperty>> shortcuts = new AlternativeProperty<>(new ArrayList<>());
+
+    /** Someone may try to register the same property more than once, this behavior is considered as illegal
+     *  since there should be only one same property in a plugin.
+     *  So here is a register check to prevent the someone trying to register the same instance more than once.
+     *  But it seems have no way to check the condition that someone construct two same property in different instance;
+     */
     private boolean registered = false;
-    private boolean isShortcut = false;
+    @Deprecated private boolean isShortcut = false;
 
     private boolean enable = true;
 
     public CommandProperty(String name) {
-        this(name, "", "", "");
+        this(name, "", "", new UsageBuild());
     }
 
-    public CommandProperty(String name, String perm, String desc, String usg) {
+    public CommandProperty(String name, String perm, String desc, UsageBuild usg) {
         this(name, null, perm, desc, usg);
     }
 
-    public CommandProperty(String name, List<String> aliases, String permission, String desc, String usage){
+    public CommandProperty(String name, List<String> aliases, String permission, String desc, UsageBuild usage){
         this(name, aliases, permission, desc, usage, "You have no permission to do this");
     }
 
-    public CommandProperty(String name, List<String> aliases, String permission, String desc, String usg, String permMsg) {
+    public CommandProperty(String name, List<String> aliases, String permission, String desc, UsageBuild usg, String permMsg) {
         this(name, aliases, permission, desc, null, usg, null, permMsg, null);
     }
 
-    public CommandProperty(String name, List<String> aliases, String perm, String desc, String descKey, String usg, String usgKey, String permMsg, String permMsgKey) {
+    public CommandProperty(String name, List<String> aliases, String perm, String desc, String descKey, UsageBuild usg, String usgKey, String permMsg, String permMsgKey) {
         if (name == null || name.isEmpty()) {
             this.name = null;
             this.alias = null;
@@ -65,7 +81,7 @@ public final class CommandProperty implements IConfigurable {
             this.permission = new AlternativeProperty<>(perm);
             this.description = new AlternativeProperty<>(desc == null ? "" : desc);
             this.descriptionKey = new AlternativeProperty<>(descKey);
-            this.usage = new AlternativeProperty<>(usg == null ? "" : usg);
+            this.usage = new AlternativeProperty<>(usg == null ? "" : usg.toString());
             this.usageKey = new AlternativeProperty<>(usgKey);
             this.permissionMessage = new AlternativeProperty<>(permMsg == null ? "" : permMsg);
             this.permissionMessageKey = new AlternativeProperty<>(permMsgKey);
@@ -132,6 +148,22 @@ public final class CommandProperty implements IConfigurable {
         return permissionMessageKey.getValue();
     }
 
+    public CommandProperty addShortcut(ShortcutProperty property) {
+        shortcuts.getValue().add(property);
+        return this;
+    }
+
+    @Override
+    public boolean hasShortcut() {
+        return shortcuts.getValue() != null && shortcuts.getValue().size() > 0;
+    }
+
+    public List<ICommandProperty> getShortcuts() {
+        List<ICommandProperty> list = new ArrayList<>(shortcuts.getValue().size());
+        shortcuts.getValue().forEach(shortcuts -> list.add(shortcuts.wrap(this)));
+        return list;
+    }
+
     public void setRegistered(boolean flag) {
         if (registered != flag) {
             if (registered) {
@@ -161,6 +193,7 @@ public final class CommandProperty implements IConfigurable {
         usageKey.removeAlter();
         permissionMessage.removeAlter();
         permissionMessageKey.removeAlter();
+        shortcuts.removeAlter();
 
         enable = true;
     }
@@ -219,12 +252,13 @@ public final class CommandProperty implements IConfigurable {
         }
     }
 
+    @Deprecated
     public CommandProperty markShortcut() {
         isShortcut = true;
         return this;
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    @Deprecated
     public boolean isShortcut() {
         return isShortcut;
     }

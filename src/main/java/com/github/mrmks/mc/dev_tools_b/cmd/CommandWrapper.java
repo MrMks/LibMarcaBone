@@ -14,15 +14,15 @@ import java.util.List;
 
 final class CommandWrapper extends Command implements PluginIdentifiableCommand {
     private final ICommandFunction function;
-    private final CommandProperty property;
+    private final ICommandProperty property;
     private final Plugin plugin;
-    protected CommandWrapper(Plugin plugin, CommandProperty property, ICommandFunction function) {
+    protected CommandWrapper(Plugin plugin, ICommandProperty property, ICommandFunction function) {
         super(property.getName(), property.getDescription(), property.getUsage(), property.getAlias());
 
         setPermission(property.getPermission());
         setPermissionMessage(property.getPermissionMessage());
 
-        property.setRegistered(true);
+        //property.setRegistered(true);
 
         this.plugin = plugin;
         this.property = property;

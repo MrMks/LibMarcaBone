@@ -23,11 +23,17 @@ public class CommandRegistry {
         reflectCommandMap();
         if (commandMap != null && !registeredPlugins.contains(plugin.getName())) {
             loadCommandConfig(plugin, pack);
-            HashMap<CommandProperty, ICommandFunction> map = pack.getMap();
             List<Command> commands = new ArrayList<>();
+
+            Map<CommandProperty, ICommandFunction> map = pack.getMap();
             for (CommandProperty property : map.keySet()) {
-                if (property.isValid() && property.isEnable()) commands.add(new CommandWrapper(plugin, property, map.get(property)));
+                if (property.isValid() && property.isEnable()) {
+                    property.setRegistered(true);
+                    commands.add(new CommandWrapper(plugin, property, map.get(property)));
+                    findShortcuts(property, map.get(property)).forEach((subProperty, function) -> commands.add(new CommandWrapper(plugin, subProperty, function)));
+                }
             }
+
             commandMap.registerAll(plugin.getDescription().getName(), commands);
             registeredPlugins.add(plugin.getName());
         }
@@ -45,7 +51,7 @@ public class CommandRegistry {
             if (yml.isConfigurationSection(entry.getKey().getName())) {
                 ConfigurationSection cSection = yml.getConfigurationSection(entry.getKey().getName());
                 entry.getKey().loadConfiguration(cSection);
-                if (entry.getValue() instanceof IConfigurable && !entry.getKey().isShortcut()) {
+                if (entry.getValue() instanceof IConfigurable) {
                     ((IConfigurable) entry.getValue()).loadConfiguration(cSection);
                 }
             }
@@ -54,7 +60,7 @@ public class CommandRegistry {
         for (Map.Entry<CommandProperty, ICommandFunction> entry : commandPackage.getMap().entrySet()) {
             ConfigurationSection cSection = yml.createSection(entry.getKey().getName());
             entry.getKey().saveConfiguration(cSection);
-            if (entry.getValue() instanceof IConfigurable && !entry.getKey().isShortcut()) {
+            if (entry.getValue() instanceof IConfigurable) {
                 ((IConfigurable) entry.getValue()).saveConfiguration(cSection);
             }
         }
@@ -64,6 +70,18 @@ public class CommandRegistry {
         } catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Can't save command configs", e);
         }
+    }
+
+    private static Map<ICommandProperty, ICommandFunction> findShortcuts(ICommandProperty property, ICommandFunction func) {
+        Map<ICommandProperty, ICommandFunction> shortcuts = new HashMap<>();
+        if (property.hasShortcut()) {
+            property.getShortcuts().forEach(subProperty->shortcuts.put(subProperty, func));
+        }
+        if (func instanceof ICommandPackage) {
+            ((ICommandPackage) func).getMap()
+                    .forEach((subProperty, subFunction) -> findShortcuts(subProperty, subFunction).forEach(shortcuts::putIfAbsent));
+        }
+        return shortcuts;
     }
 
     private static void reflectCommandMap() {

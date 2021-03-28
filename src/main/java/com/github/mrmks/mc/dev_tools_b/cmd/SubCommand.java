@@ -7,9 +7,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class SubCommand extends AbstractCommand implements IConfigurable {
+public class SubCommand extends AbstractCommand implements IConfigurable, ICommandPackage {
     private final HashMap<CommandProperty, ICommandFunction> cmdMap = new HashMap<>();
     private final HashMap<String, CommandProperty> aliasMap = new HashMap<>();
+    private final HashSet<String> nameSet = new HashSet<>();
 
     public SubCommand() {
         super();
@@ -20,7 +21,7 @@ public class SubCommand extends AbstractCommand implements IConfigurable {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender commandSender, CommandProperty property, List<String> labels, List<String> args) {
+    public List<String> onTabComplete(CommandSender commandSender, ICommandProperty property, List<String> labels, List<String> args) {
         if (!testPermissionSilent(commandSender, property)) return Collections.emptyList();
 
         List<String> completion;
@@ -48,7 +49,7 @@ public class SubCommand extends AbstractCommand implements IConfigurable {
     }
 
     @Override
-    public boolean onCommand(CommandSender commandSender, CommandProperty property, List<String> labels, List<String> args) {
+    public boolean onCommand(CommandSender commandSender, ICommandProperty property, List<String> labels, List<String> args) {
         if (!testPermissionSilent(commandSender, property)) {
             displayPermissionMessage(commandSender, property);
             return true;
@@ -97,7 +98,7 @@ public class SubCommand extends AbstractCommand implements IConfigurable {
 
                     CommandProperty property = entry.getKey();
                     property.loadConfiguration(cSection);
-                    if (!property.isShortcut() && entry.getValue() instanceof IConfigurable) {
+                    if (entry.getValue() instanceof IConfigurable) {
                         ((IConfigurable) entry.getValue()).loadConfiguration(cSection);
                     }
                 }
@@ -114,27 +115,28 @@ public class SubCommand extends AbstractCommand implements IConfigurable {
 
                 CommandProperty property = entry.getKey();
                 property.saveConfiguration(cSection);
-                if (!property.isShortcut() && entry.getValue() instanceof IConfigurable) {
+                if (entry.getValue() instanceof IConfigurable) {
                     ((IConfigurable) entry.getValue()).saveConfiguration(cSection);
                 }
             }
         }
     }
 
+    @Deprecated
     public void register(CommandPackage pack) {
         Map<CommandProperty, ICommandFunction> map = pack.getMap();
         Iterator<CommandProperty> iterator = map.keySet().iterator();
-        HashSet<String> set = new HashSet<>();
         while (iterator.hasNext()) {
             CommandProperty property = iterator.next();
-            if (property.isValid() && !set.contains(property.getName())) {
+            if (property.isValid() && !nameSet.contains(property.getName())) {
                 property.setRegistered(true);
-                set.add(property.getName());
+                nameSet.add(property.getName());
             }
             else {
                 iterator.remove();
             }
         }
+
         for (CommandProperty property : map.keySet()) {
             ICommandFunction function = map.get(property);
 
@@ -144,10 +146,30 @@ public class SubCommand extends AbstractCommand implements IConfigurable {
             Iterator<String> aliasIterator = property.getAlias().iterator();
             while (aliasIterator.hasNext()) {
                 String alias = aliasIterator.next();
-                if (!set.contains(alias)) {
-                    aliasMap.put(alias, property);
-                } else aliasIterator.remove();
+                if (!aliasMap.containsKey(alias)) aliasMap.put(alias, property);
+                else aliasIterator.remove();
             }
         }
+    }
+
+    @Override
+    public void addCommand(CommandProperty property, ICommandFunction function) {
+        if (property.isValid() && !nameSet.contains(property.getName()) && !cmdMap.containsKey(property)) {
+            property.setRegistered(true);
+            nameSet.add(property.getName());
+            cmdMap.put(property, function);
+            aliasMap.put(property.getName(), property);
+            Iterator<String> aliasIterator = property.getAlias().iterator();
+            while (aliasIterator.hasNext()) {
+                String alias = aliasIterator.next();
+                if (!aliasMap.containsKey(alias)) aliasMap.put(alias, property);
+                else aliasIterator.remove();
+            }
+        }
+    }
+
+    @Override
+    public Map<CommandProperty, ICommandFunction> getMap() {
+        return cmdMap;
     }
 }
