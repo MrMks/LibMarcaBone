@@ -1,4 +1,4 @@
-package com.github.mrmks.dev_tools_b.utils;
+package com.github.mrmks.mc.dev_tools_b.utils;
 
 public class AlternativeProperty<T> {
     private final T value_def;

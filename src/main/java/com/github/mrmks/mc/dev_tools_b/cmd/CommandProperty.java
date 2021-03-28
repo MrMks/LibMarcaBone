@@ -1,6 +1,6 @@
-package com.github.mrmks.dev_tools_b.cmd;
+package com.github.mrmks.mc.dev_tools_b.cmd;
 
-import com.github.mrmks.dev_tools_b.utils.AlternativeProperty;
+import com.github.mrmks.mc.dev_tools_b.utils.AlternativeProperty;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;

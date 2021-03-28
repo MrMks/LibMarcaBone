@@ -1,6 +1,6 @@
-package com.github.mrmks.dev_tools_b.cmd;
+package com.github.mrmks.mc.dev_tools_b.cmd;
 
-import com.github.mrmks.dev_tools_b.lang.LanguageAPI;
+import com.github.mrmks.mc.dev_tools_b.lang.LanguageAPI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

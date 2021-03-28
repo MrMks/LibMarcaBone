@@ -1,4 +1,4 @@
-package com.github.mrmks.dev_tools_b.lang;
+package com.github.mrmks.mc.dev_tools_b.lang;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

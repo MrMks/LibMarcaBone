@@ -1,7 +1,7 @@
-package com.github.mrmks.dev_tools_b.lang.helper;
+package com.github.mrmks.mc.dev_tools_b.lang.helper;
 
-import com.github.mrmks.dev_tools_b.lang.LanguageAPI;
-import com.github.mrmks.dev_tools_b.lang.LanguageHelper;
+import com.github.mrmks.mc.dev_tools_b.lang.LanguageAPI;
+import com.github.mrmks.mc.dev_tools_b.lang.LanguageHelper;
 
 import java.util.Map;
 

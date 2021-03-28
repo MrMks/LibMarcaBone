@@ -1,4 +1,4 @@
-package com.github.mrmks.dev_tools_b.cmd;
+package com.github.mrmks.mc.dev_tools_b.cmd;
 
 
 import java.util.ArrayList;
