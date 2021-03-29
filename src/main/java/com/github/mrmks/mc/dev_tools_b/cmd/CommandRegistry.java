@@ -41,7 +41,7 @@ public class CommandRegistry {
 
     @Deprecated
     public static void unregister(Plugin plugin) {
-        //reflectCommandMap();
+        registeredPlugins.remove(plugin.getName());
     }
 
     private static void loadCommandConfig(Plugin plugin, CommandPackage commandPackage) {
