@@ -47,16 +47,32 @@ public final class CommandProperty implements IConfigurable, ICommandProperty {
         this(name, "", "", new UsageBuild());
     }
 
+    public CommandProperty(String name, String desc, UsageBuild usg) {
+        this(name, "", desc, usg);
+    }
+
+    public CommandProperty(String name, String desc, String descKey, UsageBuild usg, String usgKey) {
+        this(name, null, "", desc, descKey, usg, usgKey);
+    }
+
     public CommandProperty(String name, String perm, String desc, UsageBuild usg) {
         this(name, null, perm, desc, usg);
     }
 
+    public CommandProperty(String name, String perm, String desc, String descKey, UsageBuild usg, String usgKey) {
+        this(name, null, perm, desc, descKey, usg, usgKey);
+    }
+
     public CommandProperty(String name, List<String> aliases, String permission, String desc, UsageBuild usage){
-        this(name, aliases, permission, desc, usage, "You have no permission to do this");
+        this(name, aliases, permission, desc, null, usage, null);
     }
 
     public CommandProperty(String name, List<String> aliases, String permission, String desc, UsageBuild usg, String permMsg) {
         this(name, aliases, permission, desc, null, usg, null, permMsg, null);
+    }
+
+    public CommandProperty(String name, List<String> aliases, String permission, String desc, String descKey, UsageBuild usg, String usgKey) {
+        this(name, aliases, permission, desc, descKey, usg, usgKey, "You have no permission to do this", null);
     }
 
     public CommandProperty(String name, List<String> aliases, String perm, String desc, String descKey, UsageBuild usg, String usgKey, String permMsg, String permMsgKey) {
