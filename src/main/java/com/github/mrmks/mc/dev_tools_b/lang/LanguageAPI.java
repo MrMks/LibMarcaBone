@@ -1,5 +1,6 @@
 package com.github.mrmks.mc.dev_tools_b.lang;
 
+import com.github.mrmks.mc.dev_tools_b.DevToolsB;
 import com.github.mrmks.mc.dev_tools_b.lang.helper.LocaleHelper;
 import com.github.mrmks.mc.dev_tools_b.lang.helper.LocalePlayer;
 import com.github.mrmks.mc.dev_tools_b.utils.YamlConfigLoader;
@@ -19,36 +20,15 @@ import java.util.logging.Logger;
 import static com.github.mrmks.mc.dev_tools_b.lang.LanguageFile.EMPTY;
 
 public class LanguageAPI {
-    @Deprecated
-    private static final HashMap<String, LanguageAPI> registered = new HashMap<>();
-    @Deprecated
-    public static LanguageAPI load(String pluginName) {
-        Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
-        if (plugin != null && plugin.isEnabled())
-            return load(plugin);
-        else return null;
+    private static LanguageAPI DEFAULT;
+
+    public static void initDefault(LanguageAPI api) {
+        if (DEFAULT == null) DEFAULT = api;
     }
 
-    @Deprecated
-    public static LanguageAPI load(Plugin plugin) {
-        if (!registered.containsKey(plugin.getName())) {
-            registered.put(plugin.getName(), new LanguageAPI(plugin));
-        }
-        return registered.get(plugin.getName());
+    public static void reloadDefault() {
+        DEFAULT.reload();
     }
-
-    @Deprecated
-    public static void unload(Plugin plugin) {
-        unload(plugin.getName());
-    }
-
-    @Deprecated
-    public static void unload(String name) {
-        registered.remove(name);
-    }
-
-    public static PlayerLocaleManager PM = new PlayerLocaleManager();
-    public static LanguageAPI DEFAULT;
 
     protected String LOCALE_KEY = "locale";
     protected String TRANSLATION_KEY = "translation";
@@ -104,17 +84,13 @@ public class LanguageAPI {
         }
     }
 
-    @Deprecated
-    public boolean hasPlayer(UUID uuid) {
-        return PM.has(uuid);
-    }
-
     public boolean hasKey(String locale, String key) {
         return localeMap.containsKey(locale) && localeMap.get(locale).has(key);
     }
 
     public boolean hasKey(UUID uuid, String key) {
-        return PM.has(uuid) && localeMap.getOrDefault(PM.get(uuid), EMPTY).has(key);
+        PlayerLocaleManager pm = PlayerLocaleManager.getInstance();
+        return pm.has(uuid) && localeMap.getOrDefault(pm.get(uuid), EMPTY).has(key);
     }
 
     public String getTranslation(String locale, String key) {
@@ -125,21 +101,11 @@ public class LanguageAPI {
         return translateWithTag(getTranslation(locale, key), map);
     }
 
-    @Deprecated
-    public String getTranslationWithTag(String locale, String key, Map<String, String> map) {
-        return translateWithTag(getTranslation(locale, key), map);
-    }
-
     public String getTranslation(UUID uuid, String key){
-        return getTranslation(PM.get(uuid), key);
+        return getTranslation(PlayerLocaleManager.getInstance().get(uuid), key);
     }
 
     public String getTranslation(UUID uuid, String key, Map<String, String> map) {
-        return translateWithTag(getTranslation(uuid, key),map);
-    }
-
-    @Deprecated
-    public String getTranslationWithTag(UUID uuid, String key, Map<String, String> map) {
         return translateWithTag(getTranslation(uuid, key),map);
     }
 

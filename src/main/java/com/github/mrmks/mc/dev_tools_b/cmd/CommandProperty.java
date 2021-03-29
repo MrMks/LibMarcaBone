@@ -153,6 +153,14 @@ public final class CommandProperty implements IConfigurable, ICommandProperty {
         return this;
     }
 
+    public CommandProperty addShortcut(String name) {
+        return addShortcut(new ShortcutProperty(name));
+    }
+
+    public CommandProperty addShortcut(String name, String desc, String descKey) {
+        return addShortcut(new ShortcutProperty(name, desc, descKey));
+    }
+
     @Override
     public boolean hasShortcut() {
         return shortcuts.getValue() != null && shortcuts.getValue().size() > 0;

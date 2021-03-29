@@ -26,16 +26,11 @@ class CommandManager {
                 "dtb.trans.cmd.reload.usage",
                 "You have no permission to do this",
                 "dtb.trans.cmd.reload.permMsg")
-                .addShortcut(new ShortcutProperty("dtbr"));
+                .addShortcut("dtbr");
         ICommandFunction funcReload = new AbstractCommand(api) {
             @Override
-            public List<String> onTabComplete(CommandSender sender, ICommandProperty property, List<String> label, List<String> args) {
-                return tabCompleteSelf(sender, property, label, args);
-            }
-
-            @Override
-            public boolean onCommand(CommandSender sender, ICommandProperty property, List<String> alias, List<String> args) {
-                LanguageAPI.DEFAULT.reload();
+            protected boolean commandSelf(CommandSender sender, ICommandProperty property, List<String> alias, List<String> args) {
+                LanguageAPI.reloadDefault();
                 sender.sendMessage(translate(sender, "dtb.trans.cmd.reload.success", "Default language file has been reloaded"));
                 return true;
             }
