@@ -1,6 +1,5 @@
 package com.github.mrmks.mc.dev_tools_b.cmd;
 
-import com.github.mrmks.mc.dev_tools_b.cmd.utils.UsageBuild;
 import com.github.mrmks.mc.dev_tools_b.utils.AlternativeProperty;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -44,38 +43,38 @@ public final class CommandProperty implements IConfigurable, ICommandProperty {
     private boolean enable = true;
 
     public CommandProperty(String name) {
-        this(name, "", "", new UsageBuild());
+        this(name, "", "", "");
     }
 
-    public CommandProperty(String name, String desc, UsageBuild usg) {
+    public CommandProperty(String name, String desc, String usg) {
         this(name, "", desc, usg);
     }
 
-    public CommandProperty(String name, String desc, String descKey, UsageBuild usg, String usgKey) {
+    public CommandProperty(String name, String desc, String descKey, String usg, String usgKey) {
         this(name, null, "", desc, descKey, usg, usgKey);
     }
 
-    public CommandProperty(String name, String perm, String desc, UsageBuild usg) {
-        this(name, null, perm, desc, usg);
+    public CommandProperty(String name, String perm, String desc, String usg) {
+        this(name, (List<String>) null, perm, desc, usg);
     }
 
-    public CommandProperty(String name, String perm, String desc, String descKey, UsageBuild usg, String usgKey) {
+    public CommandProperty(String name, String perm, String desc, String descKey, String usg, String usgKey) {
         this(name, null, perm, desc, descKey, usg, usgKey);
     }
 
-    public CommandProperty(String name, List<String> aliases, String permission, String desc, UsageBuild usage){
+    public CommandProperty(String name, List<String> aliases, String permission, String desc, String usage){
         this(name, aliases, permission, desc, null, usage, null);
     }
 
-    public CommandProperty(String name, List<String> aliases, String permission, String desc, UsageBuild usg, String permMsg) {
+    public CommandProperty(String name, List<String> aliases, String permission, String desc, String usg, String permMsg) {
         this(name, aliases, permission, desc, null, usg, null, permMsg, null);
     }
 
-    public CommandProperty(String name, List<String> aliases, String permission, String desc, String descKey, UsageBuild usg, String usgKey) {
+    public CommandProperty(String name, List<String> aliases, String permission, String desc, String descKey, String usg, String usgKey) {
         this(name, aliases, permission, desc, descKey, usg, usgKey, "You have no permission to do this", null);
     }
 
-    public CommandProperty(String name, List<String> aliases, String perm, String desc, String descKey, UsageBuild usg, String usgKey, String permMsg, String permMsgKey) {
+    public CommandProperty(String name, List<String> aliases, String perm, String desc, String descKey, String usg, String usgKey, String permMsg, String permMsgKey) {
         if (name == null || name.isEmpty()) {
             this.name = null;
             this.alias = null;
@@ -97,7 +96,7 @@ public final class CommandProperty implements IConfigurable, ICommandProperty {
             this.permission = new AlternativeProperty<>(perm);
             this.description = new AlternativeProperty<>(desc == null ? "" : desc);
             this.descriptionKey = new AlternativeProperty<>(descKey);
-            this.usage = new AlternativeProperty<>(usg == null ? "" : usg.toString());
+            this.usage = new AlternativeProperty<>(usg == null ? "" : usg);
             this.usageKey = new AlternativeProperty<>(usgKey);
             this.permissionMessage = new AlternativeProperty<>(permMsg == null ? "" : permMsg);
             this.permissionMessageKey = new AlternativeProperty<>(permMsgKey);

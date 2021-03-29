@@ -1,14 +1,11 @@
 package com.github.mrmks.mc.dev_tools_b;
 
 import com.github.mrmks.mc.dev_tools_b.cmd.*;
-import com.github.mrmks.mc.dev_tools_b.cmd.utils.UsageBuild;
 import com.github.mrmks.mc.dev_tools_b.lang.LanguageAPI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
 import java.util.List;
-
-import static com.github.mrmks.mc.dev_tools_b.cmd.utils.UsageBuild.ArgumentType.REQUIRED;
 
 class CommandManager {
 
@@ -22,7 +19,7 @@ class CommandManager {
                 "dtb.perm.reload",
                 "reload default translation files",
                 "dtb.trans.cmd.reload.desc",
-                new UsageBuild().append(REQUIRED, "command"),
+                "<command>",
                 "dtb.trans.cmd.reload.usage",
                 "You have no permission to do this",
                 "dtb.trans.cmd.reload.permMsg")
