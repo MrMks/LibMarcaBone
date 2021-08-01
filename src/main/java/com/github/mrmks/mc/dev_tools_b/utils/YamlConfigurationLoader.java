@@ -11,16 +11,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Level;
 
-public class YamlConfigLoader {
+public class YamlConfigurationLoader {
     private final Plugin plugin;
     private final String strFile;
     private final File configFile;
 
     private FileConfiguration newConfig;
 
-    public YamlConfigLoader(Plugin plugin, String file){
+    public YamlConfigurationLoader(Plugin plugin, String file){
         this.plugin = plugin;
         file = file.replace("\\", "/");
+        if (!file.endsWith(".yml")) file += ".yml";
         this.strFile = file;
         this.configFile = new File(plugin.getDataFolder(), file);
     }

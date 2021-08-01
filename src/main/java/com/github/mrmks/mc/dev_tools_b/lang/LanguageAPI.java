@@ -1,10 +1,8 @@
 package com.github.mrmks.mc.dev_tools_b.lang;
 
-import com.github.mrmks.mc.dev_tools_b.DevToolsB;
 import com.github.mrmks.mc.dev_tools_b.lang.helper.LocaleHelper;
 import com.github.mrmks.mc.dev_tools_b.lang.helper.LocalePlayer;
-import com.github.mrmks.mc.dev_tools_b.utils.YamlConfigLoader;
-import org.bukkit.Bukkit;
+import com.github.mrmks.mc.dev_tools_b.utils.YamlConfigurationLoader;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -50,7 +48,7 @@ public class LanguageAPI {
     }
 
     private void load0() {
-        YamlConfigLoader loader = new YamlConfigLoader(plugin, "lang/default.yml");
+        YamlConfigurationLoader loader = new YamlConfigurationLoader(plugin, "lang/default.yml");
         loader.saveDefaultConfig();
         FileConfiguration configuration = loader.getConfig();
         if (configuration != null) {
