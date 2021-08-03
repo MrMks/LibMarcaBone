@@ -26,6 +26,6 @@ public class CommandConfiguration {
     }
 
     public void reload() {
-
+        loader.reloadConfig();
     }
 }
