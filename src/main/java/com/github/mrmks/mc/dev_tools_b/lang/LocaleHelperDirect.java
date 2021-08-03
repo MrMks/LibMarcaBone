@@ -2,17 +2,16 @@ package com.github.mrmks.mc.dev_tools_b.lang;
 
 import java.util.Map;
 
-public class LocaleHelper implements LanguageHelper {
+public class LocaleHelperDirect implements LanguageHelper {
 
-    private final LanguageFile file, defFile;
-    LocaleHelper(LanguageFile file, LanguageFile def) {
+    private final LanguageFile file;
+    LocaleHelperDirect(LanguageFile file) {
         this.file = file;
-        this.defFile = def;
     }
 
     @Override
     public boolean has(String code) {
-        return defFile.has(code) || file.has(code);
+        return file.has(code);
     }
 
     @Override
@@ -22,12 +21,9 @@ public class LocaleHelper implements LanguageHelper {
 
     @Override
     public String trans(String code, String def) {
-        def = def == null ? "" : def;
-        if (code == null) return def;
+        if (code == null) return "";
         String str = file.get(code);
-        if (str == null) str = defFile.get(code);
-        if (str == null) str = def;
-        return str;
+        return str == null ? (def == null ? "" : def) : str;
     }
 
     @Override

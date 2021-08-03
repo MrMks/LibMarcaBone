@@ -27,7 +27,7 @@ class CommandManager {
         ICommandFunction funcReload = new AbstractCommand(api) {
             @Override
             protected boolean commandSelf(CommandSender sender, ICommandProperty property, List<String> alias, List<String> args) {
-                LanguageAPI.reloadDefault();
+                api.reload();
                 sender.sendMessage(translate(sender, "dtb.trans.cmd.reload.success", "Default language file has been reloaded"));
                 return true;
             }

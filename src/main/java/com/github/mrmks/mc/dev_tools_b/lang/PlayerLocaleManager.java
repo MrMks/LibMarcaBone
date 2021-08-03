@@ -12,10 +12,10 @@ import java.util.UUID;
 /**
  * DO NOT use this class directly
  */
-public class PlayerLocaleManager {
+class PlayerLocaleManager {
 
     private static PlayerLocaleManager instance;
-    public static PlayerLocaleManager getInstance() {
+    static PlayerLocaleManager getInstance() {
         if (instance == null) instance = new PlayerLocaleManager();
         return instance;
     }
@@ -38,29 +38,35 @@ public class PlayerLocaleManager {
         return map.getOrDefault(uuid, "");
     }
 
-    public void clear(){
+    void clear(){
         map.clear();
+        cache = null;
     }
 
-    public org.bukkit.event.Listener generateListener() {
-        return new Listener();
+    private Listener cache = null;
+    org.bukkit.event.Listener generateListener() {
+        if (cache == null) cache = new Listener();
+        return cache;
     }
 
     public class Listener implements org.bukkit.event.Listener {
         @EventHandler
         public void onPlayerJoin(PlayerJoinEvent event){
+            if (this != cache) return;
             Player player = event.getPlayer();
             PlayerLocaleManager.this.put(player.getUniqueId(), player.getLocale().toLowerCase());
         }
 
         @EventHandler
         public void onPlayerLocaleChange(PlayerLocaleChangeEvent event){
+            if (this != cache) return;
             Player player = event.getPlayer();
             PlayerLocaleManager.this.put(player.getUniqueId(), event.getLocale().toLowerCase());
         }
 
         @EventHandler
         public void onPlayerQuit(PlayerQuitEvent event){
+            if (this != cache) return;
             PlayerLocaleManager.this.remove(event.getPlayer().getUniqueId());
         }
     }

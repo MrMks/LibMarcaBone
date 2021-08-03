@@ -1,6 +1,6 @@
 package com.github.mrmks.mc.dev_tools_b.utils;
 
-import com.github.mrmks.mc.dev_tools_b.lang.LocalePlayer;
+import com.github.mrmks.mc.dev_tools_b.lang.LanguageHelper;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,11 +10,11 @@ import java.util.regex.Pattern;
 
 public class TagI18N {
     private static final Pattern pattern = Pattern.compile("#(?:i18n_lore|il)\\.([^<>#]+?)((?:<[^:]+?:[^:]+?>)*)#");
-    public static String trans(LocalePlayer player, String line) {
-        return transComplex(player, line).toR();
+    public static String trans(LanguageHelper helper, String line) {
+        return transComplex(helper, line).toR();
     }
 
-    static TagPack transComplex(LocalePlayer player, String line) {
+    static TagPack transComplex(LanguageHelper helper, String line) {
         String transSrc = line;
         String nonColor = line.replaceAll("§.","");
         Map<String,TagPack> map = new HashMap<>();
@@ -22,8 +22,8 @@ public class TagI18N {
             Matcher matcher = pattern.matcher(line);
             if (matcher.find()) {
                 String i18nKey = "i18n_lore." + matcher.group(1);
-                if (player.has(i18nKey)) {
-                    transSrc = player.trans(i18nKey);
+                if (helper.has(i18nKey)) {
+                    transSrc = helper.trans(i18nKey);
                     String tmps = matcher.group(2);
                     if (tmps != null) {
                         String[] tags = matcher.group(2).split("<|><|>");
@@ -31,7 +31,7 @@ public class TagI18N {
                             if (tag != null && !tag.isEmpty()) {
                                 String[] tmp = tag.split(":");
                                 if (tmp.length == 2) {
-                                    map.put(tmp[0], transComplex(player, tmp[1]));
+                                    map.put(tmp[0], transComplex(helper, tmp[1]));
                                 }
                             }
                         }
