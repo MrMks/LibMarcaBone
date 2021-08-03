@@ -30,4 +30,8 @@ class CommandUtils {
         ary[index] = cmd == null || cmd.isEmpty();
         return ary[index] ? manual : cmd;
     }
+
+    static String nonNull(String str, String def) {
+        return str == null ? (def == null ? "" : def) : str;
+    }
 }

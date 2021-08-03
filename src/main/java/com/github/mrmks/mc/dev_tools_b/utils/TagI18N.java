@@ -1,6 +1,6 @@
 package com.github.mrmks.mc.dev_tools_b.utils;
 
-import com.github.mrmks.mc.dev_tools_b.lang.helper.LocalePlayer;
+import com.github.mrmks.mc.dev_tools_b.lang.LocalePlayer;
 
 import java.util.Collections;
 import java.util.HashMap;

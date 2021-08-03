@@ -22,19 +22,19 @@ public class PlayerLocaleManager {
 
     private final HashMap<UUID, String> map = new HashMap<>();
 
-    public void put(UUID uuid, String locale){
+    void put(UUID uuid, String locale){
         map.put(uuid, locale);
     }
 
-    public void remove(UUID uuid) {
+    void remove(UUID uuid) {
         map.remove(uuid);
     }
 
-    public boolean has(UUID uuid) {
+    boolean has(UUID uuid) {
         return map.containsKey(uuid);
     }
 
-    public String get(UUID uuid) {
+    String get(UUID uuid) {
         return map.getOrDefault(uuid, "");
     }
 

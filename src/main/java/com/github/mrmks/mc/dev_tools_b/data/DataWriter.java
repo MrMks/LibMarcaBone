@@ -107,7 +107,7 @@ public class DataWriter {
             }
         }
 
-        public File getCertainEntry() {
+        private File getCertainEntry() {
             synchronized (entryLock) {
                 return entry.file;
             }

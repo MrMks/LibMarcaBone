@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-abstract class ParentCommand implements ICommand {
+public class CommandParent {
     protected HashMap<String, ICommand> map;
 
     public void addChild(ISubCommand cmd) {
@@ -32,8 +32,7 @@ abstract class ParentCommand implements ICommand {
         return map.get(slice.at(0));
     }
 
-    @Override
-    public boolean execute(CommandSender sender, String label, String fLabel, ArraySlice<String> args) {
+    public boolean execute(IParentCommand superCmd, CommandSender sender, String label, String fLabel, ArraySlice<String> args) {
         ICommand cmd = getChild(args);
         if (cmd != null) {
             fLabel = fLabel + " " + args.first();
@@ -44,21 +43,16 @@ abstract class ParentCommand implements ICommand {
                     cmd.displayUsage(sender, label, fLabel, args);
                 }
             }
-            else noPermissionMessage(sender, label, fLabel, args);
+            else cmd.noPermissionMessage(sender, label, fLabel, args);
         } else {
-            if (!executeSelf(sender, label, fLabel, args)) {
-                displayUsage(sender, label, fLabel, args);
+            if (!superCmd.executeSelf(sender, label, fLabel, args)) {
+                superCmd.displayUsage(sender, label, fLabel, args);
             }
         }
 
         return true;
     }
 
-    protected boolean executeSelf(CommandSender sender, String label, String fLabel, ArraySlice<String> args) {
-        return false;
-    }
-
-    @Override
     public List<String> complete(CommandSender sender, String label, String fLabel, ArraySlice<String> args) {
         ICommand cmd = getChild(args);
         if (cmd != null) {

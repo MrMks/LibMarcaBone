@@ -1,4 +1,4 @@
-package com.github.mrmks.mc.dev_tools_b.lang.helper;
+package com.github.mrmks.mc.dev_tools_b.lang;
 
 import com.github.mrmks.mc.dev_tools_b.lang.LanguageAPI;
 import com.github.mrmks.mc.dev_tools_b.lang.LanguageHelper;

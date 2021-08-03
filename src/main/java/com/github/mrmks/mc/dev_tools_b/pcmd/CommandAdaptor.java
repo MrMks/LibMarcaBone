@@ -7,7 +7,9 @@ import org.bukkit.command.TabExecutor;
 
 import java.util.List;
 
-public class CommandAdaptor extends ParentCommand implements TabExecutor {
+public class CommandAdaptor implements TabExecutor, IParentCommand {
+
+    private final CommandParent parent = new CommandParent();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -17,6 +19,11 @@ public class CommandAdaptor extends ParentCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         return complete(sender, label, label, new ArgSlice(args));
+    }
+
+    @Override
+    public CommandParent getParent() {
+        return parent;
     }
 
     @Override

@@ -1,7 +1,5 @@
 package com.github.mrmks.mc.dev_tools_b.lang;
 
-import com.github.mrmks.mc.dev_tools_b.lang.helper.LocaleHelper;
-import com.github.mrmks.mc.dev_tools_b.lang.helper.LocalePlayer;
 import com.github.mrmks.mc.dev_tools_b.utils.YamlConfigurationLoader;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

@@ -1,53 +1,44 @@
 package com.github.mrmks.mc.dev_tools_b.pcmd;
 
-import java.util.Arrays;
 import java.util.List;
 
-public abstract class FunctionCommand extends AbstractCommand {
+import static com.github.mrmks.mc.dev_tools_b.pcmd.CommandUtils.nonNull;
 
-    private final String name;
-    private final String[] aliases;
-    private final String description;
-    private final String usage;
-    private final String permission;
-    private final String permissionMessage;
+public abstract class FunctionCommand implements ISubCommand {
+
+    private final CommandProperty property;
 
     public FunctionCommand(String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
-        this.description = desc;
-        this.usage = usg;
-        this.permission = perm;
-        this.permissionMessage = permMsg;
-        this.name = name = CommandUtils.pureName(name);
-        this.aliases = CommandUtils.pureAliases(name, aliases);
+        this.property = new CommandProperty(name, aliases, desc, usg, perm, permMsg);
     }
 
     @Override
     public String getName() {
-        return name;
+        return property.getName();
     }
 
     @Override
     public String getDescription() {
-        return description == null ? "" : description;
+        return nonNull(property.getDescription(), "");
     }
 
     @Override
     public String getUsage() {
-        return usage == null ? "" : usage;
+        return nonNull(property.getUsage(), "");
     }
 
     @Override
     public String getPermission() {
-        return permission == null ? "" : permission;
+        return nonNull(property.getPermission(), "");
     }
 
     @Override
     public String getPermissionMessage() {
-        return permissionMessage == null ? "" : permissionMessage;
+        return nonNull(property.getPermissionMessage(), "");
     }
 
     @Override
     public List<String> getAliases() {
-        return Arrays.asList(aliases);
+        return property.getAliases();
     }
 }
