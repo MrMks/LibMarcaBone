@@ -9,8 +9,7 @@ import java.util.List;
 
 import static com.github.mrmks.mc.dev_tools_b.pcmd.CommandUtils.*;
 
-public class SubCfgCommand extends AbstractSubCommand implements IConfigurable {
-
+public abstract class FunctionCfgCommand extends AbstractCommand implements IConfigurable {
     private final String configKey;
     private final AlternativeProperty<String> name;
     private final AlternativeProperty<String[]> aliases;
@@ -20,22 +19,21 @@ public class SubCfgCommand extends AbstractSubCommand implements IConfigurable {
     private final AlternativeProperty<String> permissionMessage;
     private final boolean[] loadFlag = new boolean[4];
 
-    public SubCfgCommand(String configKey, String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
+    public FunctionCfgCommand(String configKey, String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
         this.configKey = configKey;
         this.description = new AlternativeProperty<>(desc);
         this.usage = new AlternativeProperty<>(usg);
         this.permission = new AlternativeProperty<>(perm);
         this.permissionMessage = new AlternativeProperty<>(permMsg);
         this.name = new AlternativeProperty<>(name = pureName(name));
-        this.aliases = new AlternativeProperty<>(CommandUtils.pureAliases(name, aliases));
+        this.aliases = new AlternativeProperty<>(pureAliases(name, aliases));
         Arrays.fill(loadFlag, true);
     }
 
-    protected SubCfgCommand(PluginCommand cmd, String key, String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
-        this.configKey = key;
+    protected FunctionCfgCommand(PluginCommand cmd, String cfgKey, String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
+        this.configKey = cfgKey;
         this.name = new AlternativeProperty<>(name = pureName(name));
         this.aliases = new AlternativeProperty<>(pureAliases(name, aliases));
-
         this.description = new AlternativeProperty<>(selectString(cmd.getDescription(), desc, loadFlag, 0));
         this.usage = new AlternativeProperty<>(selectString(cmd.getUsage(), usg, loadFlag, 1));
         this.permission = new AlternativeProperty<>(selectString(cmd.getPermission(), perm, loadFlag, 2));
@@ -96,4 +94,5 @@ public class SubCfgCommand extends AbstractSubCommand implements IConfigurable {
     public List<String> getAliases() {
         return Arrays.asList(aliases.getValue());
     }
+
 }

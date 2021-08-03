@@ -1,6 +1,9 @@
 package com.github.mrmks.mc.dev_tools_b.pcmd;
 
-public class SubCommand extends AbstractCommand {
+import java.util.Arrays;
+import java.util.List;
+
+public class SubCommand extends AbstractSubCommand {
 
     private final String name;
     private final String[] aliases;
@@ -14,42 +17,8 @@ public class SubCommand extends AbstractCommand {
         this.usage = usg;
         this.permission = perm;
         this.permissionMessage = permMsg;
-
-        // set the name;
-        if (name == null) {
-            if (aliases != null) {
-                for (int i = 0; i < aliases.length; i++) {
-                    name = aliases[i];
-                    if (name != null && !name.isEmpty()) {
-                        aliases[i] = null;
-                        break;
-                    }
-                }
-            }
-            if (name == null) name = "null";
-        }
-        this.name = name;
-
-        // set the aliases;
-        if (aliases == null) {
-            this.aliases = new String[0];
-        } else {
-            int i = 0;
-            for (String str : aliases) {
-                if (str != null && !str.isEmpty() && !str.equals(name))
-                    i += 1;
-            }
-            if (i == 0) this.aliases = new String[0];
-            else {
-                String[] tmp = new String[i];
-                int j = 0;
-                for (String str : aliases) {
-                    if (str != null && !str.isEmpty() && !str.equals(name))
-                        tmp[j++] = str;
-                }
-                this.aliases = tmp;
-            }
-        }
+        this.name = name = CommandUtils.pureName(name);
+        this.aliases = CommandUtils.pureAliases(name, aliases);
     }
 
     public SubCommand(String name) {
@@ -106,7 +75,7 @@ public class SubCommand extends AbstractCommand {
     }
 
     @Override
-    public String[] getAliases() {
-        return aliases;
+    public List<String> getAliases() {
+        return Arrays.asList(aliases);
     }
 }

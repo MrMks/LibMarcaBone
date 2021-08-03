@@ -32,6 +32,14 @@ public class ArraySlice<T> {
         return src[index + bi];
     }
 
+    public T first() {
+        return at(0);
+    }
+
+    public T last() {
+        return at(size() - 1);
+    }
+
     public ArraySlice<T> slice(int begin) {
         return slice(begin, size());
     }

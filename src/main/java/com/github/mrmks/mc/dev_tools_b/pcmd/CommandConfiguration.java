@@ -11,7 +11,7 @@ public class CommandConfiguration {
         loader.saveDefaultConfig();
     }
 
-    public void loadCommand(IFunctionCommand cmd) {
+    public void loadCommand(ICommand cmd) {
         if (cmd instanceof IConfigurable) {
             IConfigurable ccmd = (IConfigurable) cmd;
             String path = ccmd.getConfigKey();

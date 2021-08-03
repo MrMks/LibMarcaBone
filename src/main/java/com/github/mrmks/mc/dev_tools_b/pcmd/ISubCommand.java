@@ -1,13 +1,12 @@
 package com.github.mrmks.mc.dev_tools_b.pcmd;
 
-public interface ISubCommand extends IFunctionCommand {
+import java.util.List;
+
+public interface ISubCommand extends ICommand {
     String getName();
     String getDescription();
     String getUsage();
     String getPermission();
     String getPermissionMessage();
-    String[] getAliases();
-
-    void addChild(ISubCommand cmd);
-    void addChild(IFunctionCommand cmd, String name, String... names);
+    List<String> getAliases();
 }
