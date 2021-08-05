@@ -110,6 +110,6 @@ public class LanguageAPI {
     }
 
     public LanguageHelper helper() {
-        return new LocaleHelperDirect(defaultLocale);
+        return new LocaleHelper(defaultLocale);
     }
 }

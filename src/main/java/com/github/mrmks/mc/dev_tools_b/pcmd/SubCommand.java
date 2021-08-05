@@ -1,11 +1,17 @@
 package com.github.mrmks.mc.dev_tools_b.pcmd;
 
+import com.github.mrmks.mc.dev_tools_b.lang.LanguageAPI;
+
 public class SubCommand extends FunctionCommand implements IParentCommand {
 
     private final CommandParent parent = new CommandParent();
 
     public SubCommand(String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
         super(name, aliases, desc, usg, perm, permMsg);
+    }
+
+    public SubCommand(LanguageAPI api, String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
+        super(api, name, aliases, desc, usg, perm, permMsg);
     }
 
     public SubCommand(String name) {

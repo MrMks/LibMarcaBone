@@ -1,14 +1,21 @@
 package com.github.mrmks.mc.dev_tools_b.pcmd;
 
+import com.github.mrmks.mc.dev_tools_b.lang.LanguageAPI;
+
 import java.util.List;
 
 import static com.github.mrmks.mc.dev_tools_b.pcmd.CommandUtils.nonNull;
 
-public abstract class FunctionCommand implements ISubCommand {
+public abstract class FunctionCommand extends AbstractCommand {
 
     private final CommandProperty property;
 
     public FunctionCommand(String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
+        this.property = new CommandProperty(name, aliases, desc, usg, perm, permMsg);
+    }
+
+    public FunctionCommand(LanguageAPI api, String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
+        super(api);
         this.property = new CommandProperty(name, aliases, desc, usg, perm, permMsg);
     }
 

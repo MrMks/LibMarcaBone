@@ -1,18 +1,29 @@
 package com.github.mrmks.mc.dev_tools_b.pcmd;
 
+import com.github.mrmks.mc.dev_tools_b.lang.LanguageAPI;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.List;
 
-public abstract class FunctionCfgCommand implements ISubCommand, IConfigurable {
+public abstract class FunctionCfgCommand extends AbstractCommand implements IConfigurable {
     private final CommandPropertyCfg property;
 
     public FunctionCfgCommand(String configKey, String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
         this.property = new CommandPropertyCfg(configKey, name, aliases, desc, usg, perm, permMsg);
     }
 
+    public FunctionCfgCommand(LanguageAPI api, String configKey, String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
+        super(api);
+        this.property = new CommandPropertyCfg(configKey, name, aliases, desc, usg, perm, permMsg);
+    }
+
     protected FunctionCfgCommand(PluginCommand cmd, String cfgKey, String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
+        this.property = new CommandPropertyCfg(cmd, cfgKey, name, aliases, desc, usg, perm, permMsg);
+    }
+
+    protected FunctionCfgCommand(LanguageAPI api, PluginCommand cmd, String cfgKey, String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
+        super(api);
         this.property = new CommandPropertyCfg(cmd, cfgKey, name, aliases, desc, usg, perm, permMsg);
     }
 

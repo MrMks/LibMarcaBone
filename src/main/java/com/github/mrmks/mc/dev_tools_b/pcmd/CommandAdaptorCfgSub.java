@@ -1,11 +1,8 @@
 package com.github.mrmks.mc.dev_tools_b.pcmd;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
+import com.github.mrmks.mc.dev_tools_b.lang.LanguageAPI;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
-
-import java.util.List;
 
 public class CommandAdaptorCfgSub extends SubCfgCommand implements TabExecutor {
 
@@ -13,13 +10,7 @@ public class CommandAdaptorCfgSub extends SubCfgCommand implements TabExecutor {
         super(cmd, configKey, name, aliases, desc, usg, perm, permMsg);
     }
 
-    @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        return false;
-    }
-
-    @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
-        return null;
+    public CommandAdaptorCfgSub(LanguageAPI api, PluginCommand cmd, String configKey, String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
+        super(api, cmd, configKey, name, aliases, desc, usg, perm, permMsg);
     }
 }

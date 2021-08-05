@@ -17,7 +17,7 @@ public class CommandParent {
         addChild(cmd, cmd.getName(), cmd.getAliases().toArray(new String[0]));
     }
 
-    public void addChild(ICommand cmd, String name, String... aliases){
+    private void addChild(ICommand cmd, String name, String... aliases){
         if (cmd == null || name == null) return;
         if (map == null) map = new HashMap<>();
         map.put(name, cmd);

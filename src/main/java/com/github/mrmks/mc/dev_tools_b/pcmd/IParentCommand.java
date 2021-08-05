@@ -10,10 +10,6 @@ interface IParentCommand extends ICommand {
         getParent().addChild(cmd);
     }
 
-    default void addChild(ICommand cmd, String name, String... aliases) {
-        getParent().addChild(cmd, name, aliases);
-    }
-
     default boolean execute(CommandSender sender, String label, String fLabel, ArraySlice<String> slice) {
         return getParent().execute(this, sender, label, fLabel, slice);
     }
