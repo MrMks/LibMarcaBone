@@ -1,4 +1,4 @@
-package com.github.mrmks.mc.dev_tools_b.pcmd;
+package com.github.mrmks.mc.dev_tools_b.cmd;
 
 import com.github.mrmks.mc.dev_tools_b.utils.AlternativeProperty;
 import org.bukkit.command.PluginCommand;
@@ -7,7 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.github.mrmks.mc.dev_tools_b.pcmd.CommandUtils.*;
+import static com.github.mrmks.mc.dev_tools_b.cmd.CommandUtils.*;
 
 public class CommandPropertyCfg implements ICommandProperty,IConfigurable {
 

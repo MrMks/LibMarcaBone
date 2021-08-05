@@ -77,23 +77,6 @@ public class LanguageAPI {
         }
     }
 
-    @Deprecated
-    public boolean hasKey(UUID uuid, String key) {
-
-        PlayerLocaleManager pm = PlayerLocaleManager.getInstance();
-        return pm.has(uuid) && localeMap.getOrDefault(pm.get(uuid), EMPTY).has(key);
-    }
-
-    @Deprecated
-    public String getTranslation(String locale, String key) {
-        return localeMap.getOrDefault(locale, EMPTY).getOrDefault(key, localeMap.getOrDefault(defaultLocale.getLocale(), EMPTY).get(key));
-    }
-
-    @Deprecated
-    public String getTranslation(UUID uuid, String key){
-        return getTranslation(PlayerLocaleManager.getInstance().get(uuid), key);
-    }
-
     public LanguageHelper helper(String locale) {
         if (locale == null) return helper();
         LanguageFile file = localeMap.get(locale);

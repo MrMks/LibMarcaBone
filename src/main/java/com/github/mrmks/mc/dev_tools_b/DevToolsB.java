@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class DevToolsB extends JavaPlugin {
 
     private CommandManager cmdManager = null;
+    private LanguageAPI api = null;
 
     @Override
     public void onLoad() {
@@ -19,13 +20,13 @@ public class DevToolsB extends JavaPlugin {
     public void onEnable() {
         if (cmdManager == null) cmdManager = new CommandManager(this);
         LanguageAPI.init(this);
-        LanguageAPI api = new LanguageAPI(this);
-        cmdManager.register(api);
+        if (api == null) api = new LanguageAPI(this);
+        cmdManager.register(api, getCommand("dtb"));
     }
 
     @Override
     public void onDisable() {
-        if (cmdManager != null) cmdManager.unregister();
+        if (cmdManager != null) cmdManager.unregister(getCommand("dtb"));
         HandlerList.unregisterAll(this);
         LanguageAPI.cleanup();
     }

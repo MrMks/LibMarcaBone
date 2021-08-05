@@ -1,4 +1,4 @@
-package com.github.mrmks.mc.dev_tools_b.pcmd;
+package com.github.mrmks.mc.dev_tools_b.cmd;
 
 import com.github.mrmks.mc.dev_tools_b.utils.YamlConfigurationLoader;
 import org.bukkit.configuration.ConfigurationSection;
@@ -11,7 +11,7 @@ public class CommandConfiguration {
         loader.saveDefaultConfig();
     }
 
-    public void loadCommand(ICommand cmd) {
+    public ISubCommand loadCommand(ISubCommand cmd) {
         if (cmd instanceof IConfigurable) {
             IConfigurable ccmd = (IConfigurable) cmd;
             String path = ccmd.getConfigKey();
@@ -19,6 +19,7 @@ public class CommandConfiguration {
             cfg = cfg.isConfigurationSection(path) ? cfg.getConfigurationSection(path) : cfg.createSection(path);
             ccmd.loadConfig(cfg);
         }
+        return cmd;
     }
 
     public void save() {

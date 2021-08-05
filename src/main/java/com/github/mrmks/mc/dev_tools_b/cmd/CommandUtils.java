@@ -1,4 +1,4 @@
-package com.github.mrmks.mc.dev_tools_b.pcmd;
+package com.github.mrmks.mc.dev_tools_b.cmd;
 
 class CommandUtils {
 

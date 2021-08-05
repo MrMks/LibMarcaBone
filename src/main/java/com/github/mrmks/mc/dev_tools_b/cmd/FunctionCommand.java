@@ -1,10 +1,10 @@
-package com.github.mrmks.mc.dev_tools_b.pcmd;
+package com.github.mrmks.mc.dev_tools_b.cmd;
 
 import com.github.mrmks.mc.dev_tools_b.lang.LanguageAPI;
 
 import java.util.List;
 
-import static com.github.mrmks.mc.dev_tools_b.pcmd.CommandUtils.nonNull;
+import static com.github.mrmks.mc.dev_tools_b.cmd.CommandUtils.nonNull;
 
 public abstract class FunctionCommand extends AbstractCommand {
 
