@@ -7,7 +7,7 @@ public class TagString extends TagValued {
     }
 
     @Override
-    protected EnumTagType getType() {
+    public EnumTagType getType() {
         return EnumTagType.STRING;
     }
 

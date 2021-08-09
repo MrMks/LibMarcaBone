@@ -12,7 +12,7 @@ public class TagList extends TagBase {
     }
 
     @Override
-    protected EnumTagType getType() {
+    public EnumTagType getType() {
         return EnumTagType.LIST;
     }
 

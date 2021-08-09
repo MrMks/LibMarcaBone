@@ -7,7 +7,7 @@ public class TagLongArray extends TagValued {
     }
 
     @Override
-    protected EnumTagType getType() {
+    public EnumTagType getType() {
         return EnumTagType.LONG_ARRAY;
     }
 

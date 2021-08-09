@@ -7,7 +7,7 @@ public class TagShort extends TagValued {
     }
 
     @Override
-    protected EnumTagType getType() {
+    public EnumTagType getType() {
         return EnumTagType.SHORT;
     }
 

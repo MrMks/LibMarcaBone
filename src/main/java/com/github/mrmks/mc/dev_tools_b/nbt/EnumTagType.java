@@ -3,7 +3,7 @@ package com.github.mrmks.mc.dev_tools_b.nbt;
 public enum EnumTagType {
     END, BYTE, SHORT, INT, LONG, FLOAT, DOUBLE, BYTE_ARRAY, STRING, LIST, COMPOUND, INT_ARRAY, LONG_ARRAY;
 
-    public String getClassName() {
+    String getClassName() {
         switch (this) {
             case BYTE:
                 return "NBTTagByte";
@@ -63,7 +63,7 @@ public enum EnumTagType {
         }
     }
 
-    public boolean hasConstructorParams() {
+    boolean hasConstructorParams() {
         switch (this) {
             case BYTE:
             case SHORT:
@@ -84,7 +84,7 @@ public enum EnumTagType {
         }
     }
 
-    public Class<?> getConstructorParamTypes() {
+    Class<?> getConstructorParamTypes() {
         switch (this) {
             case BYTE:
                 return byte.class;
@@ -111,7 +111,7 @@ public enum EnumTagType {
         }
     }
 
-    public String getGetterName() {
+    String getGetterName() {
         switch (this) {
             case BYTE:
                 return "g";

@@ -14,7 +14,7 @@ public class TagCompound extends TagBase {
     }
 
     @Override
-    protected EnumTagType getType() {
+    public EnumTagType getType() {
         return EnumTagType.COMPOUND;
     }
 
@@ -49,6 +49,29 @@ public class TagCompound extends TagBase {
 
     public void setTagLong(String key, long data) {
         setTag(key, new TagLong(data));
+    }
+
+    public void setTagFloat(String key, float data) {
+        setTag(key, new TagFloat(data));
+    }
+
+    public void setTagDouble(String key, double data) {
+        setTag(key, new TagDouble(data));
+    }
+
+    public void setTagByteArray(String key, byte[] data) {
+        if (data == null) return;
+        setTag(key, new TagByteArray(data));
+    }
+
+    public void setTagIntArray(String key, int[] data) {
+        if (data == null) return;
+        setTag(key, new TagIntArray(data));
+    }
+
+    public void setTagLongArray(String key, long[] data) {
+        if (data == null) return;
+        setTag(key, new TagLongArray(data));
     }
 
     public void removeTag(String key) {

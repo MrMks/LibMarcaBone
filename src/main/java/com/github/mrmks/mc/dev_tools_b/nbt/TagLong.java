@@ -7,7 +7,7 @@ public class TagLong extends TagValued {
     }
 
     @Override
-    protected EnumTagType getType() {
+    public EnumTagType getType() {
         return EnumTagType.LONG;
     }
 

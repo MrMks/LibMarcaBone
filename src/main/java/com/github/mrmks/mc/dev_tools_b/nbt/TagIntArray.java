@@ -7,7 +7,7 @@ public class TagIntArray extends TagValued {
     }
 
     @Override
-    protected EnumTagType getType() {
+    public EnumTagType getType() {
         return EnumTagType.INT_ARRAY;
     }
 

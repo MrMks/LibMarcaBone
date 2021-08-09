@@ -17,5 +17,5 @@ public abstract class TagBase {
         return NBTUtils.isInstanceOf(getType(), nmsInstance);
     }
 
-    protected abstract EnumTagType getType();
+    public abstract EnumTagType getType();
 }

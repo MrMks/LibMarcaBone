@@ -7,7 +7,7 @@ public class TagByteArray extends TagValued {
     }
 
     @Override
-    protected EnumTagType getType() {
+    public EnumTagType getType() {
         return EnumTagType.BYTE_ARRAY;
     }
 
