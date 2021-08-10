@@ -14,10 +14,19 @@ public class CommandParent {
 
     public void addChild(ISubCommand cmd) {
         if (cmd == null) return;
-        addChild(cmd, cmd.getName(), cmd.getAliases().toArray(new String[0]));
+        addChild(cmd, cmd.getName(), cmd.getAliases());
     }
 
     private void addChild(ICommand cmd, String name, String... aliases){
+        if (cmd == null || name == null) return;
+        if (map == null) map = new HashMap<>();
+        map.put(name, cmd);
+        if (aliases != null) {
+            for (String alias : aliases) map.putIfAbsent(alias, cmd);
+        }
+    }
+
+    private void addChild(ICommand cmd, String name, List<String> aliases) {
         if (cmd == null || name == null) return;
         if (map == null) map = new HashMap<>();
         map.put(name, cmd);

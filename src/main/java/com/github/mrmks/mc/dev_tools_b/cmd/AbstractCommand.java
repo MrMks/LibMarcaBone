@@ -46,7 +46,7 @@ public abstract class AbstractCommand implements ISubCommand {
         if (desc != null && !desc.isEmpty()) sender.sendMessage(desc.split("\n"));
         String usg = helper.trans(getUsage());
         if (usg != null && !usg.isEmpty())
-            sender.sendMessage(getUsage().replace("<command>", fLabel).split("\n"));
+            sender.sendMessage(usg.replace("<command>", fLabel).split("\n"));
     }
 
     protected LanguageHelper getHelper(CommandSender sender) {

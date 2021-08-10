@@ -80,10 +80,12 @@ public class CommandPropertyCfg implements ICommandProperty,IConfigurable {
     public void loadConfig(ConfigurationSection section) {
         loadConfig0(section, "name", name);
 
-        List<String> list = section.getStringList("aliases");
-        list.removeIf(str -> str == null || str.isEmpty());
-        String[] tmp = list.toArray(new String[0]);
-        aliases.setAlter(tmp);
+        if (section.contains("aliases")) {
+            List<String> list = section.getStringList("aliases");
+            list.removeIf(str -> str == null || str.isEmpty());
+            String[] tmp = list.toArray(new String[0]);
+            aliases.setAlter(tmp);
+        }
         section.set("aliases", Arrays.asList(aliases.getValue()));
 
         if (flag[0]) loadConfig0(section, "description", desc);
@@ -93,7 +95,10 @@ public class CommandPropertyCfg implements ICommandProperty,IConfigurable {
     }
 
     private void loadConfig0(ConfigurationSection section, String key, AlternativeProperty<String> ap) {
-        ap.setAlter(section.getString(key, ap.getValue()));
-        section.set(key, ap.getValue());
+        if (section.contains(key)) {
+            ap.setAlter(section.getString(key, ap.getValue()));
+        } else {
+            section.set(key, ap.getValue());
+        }
     }
 }

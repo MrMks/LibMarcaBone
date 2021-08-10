@@ -1,6 +1,7 @@
 package com.github.mrmks.mc.dev_tools_b.nbt;
 
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -26,10 +27,12 @@ public class NBTUtils {
     private static Class<?> classOfNMSItem;
     private static Field fieldOfItemHandle;
     private static Method[] nmsItemMethod;
+
+    private static Method craftCopyMethod;
     static {
         String ver = Bukkit.getServer().getClass().getPackage().getName();
         p_obc = ver;
-        p_nms = "net.minecraft.server." + ver.substring(ver.lastIndexOf("."));
+        p_nms = "net.minecraft.server." + ver.substring(ver.lastIndexOf(".") + 1);
         available = true;
 
         Class<?> nbt_base_klass = loadNMSClass("NBTBase");
@@ -41,13 +44,13 @@ public class NBTUtils {
             reClassMap = new HashMap<>();
             for (EnumTagType type : EnumTagType.values()) {
                 if (!available) break;
-                Class<?> klass = loadNMSClass(p_nms + type.getClassName());
+                Class<?> klass = loadNMSClass(type.getClassName());
                 classEnumMap.put(type, klass);
                 reClassMap.put(klass, type);
 
                 if (type == EnumTagType.END) continue;
                 if (klass != null) {
-                    Constructor<?> c = loadClassConstructor(klass, type.getConstructorParamTypes());
+                    Constructor<?> c = type.hasConstructorParams() ? loadClassConstructor(klass, type.getConstructorParamTypes()) : loadClassConstructor(klass);
                     if (c != null) constructorEnumMap.put(type, c);
                     else available = false;
                 } else available = false;
@@ -62,15 +65,15 @@ public class NBTUtils {
                 if (!type.getGetterName().isEmpty()) {
                     try {
                         methodEnumMap.put(type, loadMethod(k, type.getGetterName()));
-                    } catch (NoSuchMethodException e) {
+                    } catch (Throwable e) {
                         available = false;
                     }
                 } else {
                     if (type == EnumTagType.LONG_ARRAY) {
                         try {
-                            fieldOfLongArrayTag = k.getDeclaredField("data");
+                            fieldOfLongArrayTag = k.getDeclaredField("b");
                             fieldOfLongArrayTag.setAccessible(true);
-                        } catch (NoSuchFieldException e) {
+                        } catch (Throwable e) {
                             available = false;
                         }
                     }
@@ -89,7 +92,7 @@ public class NBTUtils {
                         loadMethod(k, "isEmpty"),                         //isEmpty
                         loadMethod(k, "size")                             //size
                 };
-            } catch (NoSuchMethodException e) {
+            } catch (Throwable e) {
                 available = false;
             }
             k = classEnumMap.get(EnumTagType.COMPOUND);
@@ -103,7 +106,7 @@ public class NBTUtils {
                         loadMethod(k, "hasKey", String.class),                //hasKey
                         loadMethod(k, "c")                                    //keySet
                 };
-            } catch (NoSuchMethodException e) {
+            } catch (Throwable e) {
                 available = false;
             }
         }
@@ -119,18 +122,33 @@ public class NBTUtils {
                             loadMethod(classOfNMSItem, "getTag"),                                             // getTag
                             loadMethod(classOfNMSItem, "setTag", classEnumMap.get(EnumTagType.COMPOUND))      // setTag
                     };
-                } catch (NoSuchMethodException | NoSuchFieldException e) {
+                } catch (Throwable e) {
                     available = false;
                 }
             } else available = false;
         }
 
+        if (available) {
+            try {
+                craftCopyMethod = loadMethod(classOfOBCItem, "asCraftCopy", ItemStack.class);
+            } catch (Throwable tr) {
+                available = false;
+            }
+        }
+
         if (!available) {
-            classEnumMap.clear();
-            reClassMap.clear();
-            constructorEnumMap.clear();
-            Arrays.fill(listMethod, null);
-            Arrays.fill(compoundMethod, null);
+            craftCopyMethod = null;
+            classOfOBCItem = null;
+            classOfOBCItem = null;
+            fieldOfItemHandle = null;
+            fieldOfLongArrayTag = null;
+            if (classEnumMap != null) classEnumMap.clear();
+            if (reClassMap != null) reClassMap.clear();
+            if (constructorEnumMap != null) constructorEnumMap.clear();
+            if (methodEnumMap != null) methodEnumMap.clear();
+            if (listMethod != null) Arrays.fill(listMethod, null);
+            if (compoundMethod != null) Arrays.fill(compoundMethod, null);
+            if (nmsItemMethod != null) Arrays.fill(nmsItemMethod, null);
         }
     }
 
@@ -158,7 +176,7 @@ public class NBTUtils {
 
     private static Class<?> loadClass(String pkg, String kls) {
         Class<?> ret = null;
-        try {ret = Class.forName(pkg + kls);} catch (ClassNotFoundException ignored){}
+        try {ret = Class.forName(pkg + '.' + kls);} catch (Throwable ignored){}
         return ret;
     }
 
@@ -167,7 +185,7 @@ public class NBTUtils {
             Constructor<?> c = k.getDeclaredConstructor(classes);
             c.setAccessible(true);
             return c;
-        } catch (NoSuchMethodException e) {
+        } catch (Throwable e) {
             return null;
         }
     }
@@ -484,6 +502,20 @@ public class NBTUtils {
         } catch (Throwable tr) {
             return Collections.emptySet();
         }
+    }
+
+    static ItemStack wrapCopy(ItemStack stack) {
+        if (available) {
+            if (classOfOBCItem.isInstance(stack)) {
+                return stack;
+            } else {
+                try {
+                    return (ItemStack) craftCopyMethod.invoke(null, stack);
+                } catch (Throwable tr) {
+                    return stack;
+                }
+            }
+        } else return stack;
     }
 
     // item methods

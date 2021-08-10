@@ -6,8 +6,8 @@ public class NBTItem {
     private final boolean modifiable;
     private final ItemStack stack;
     public NBTItem(ItemStack stack) {
-        modifiable = NBTUtils.isItemTagModifiable(stack);
-        this.stack = stack;
+        this.stack = NBTUtils.wrapCopy(stack);
+        modifiable = NBTUtils.isItemTagModifiable(this.stack);
     }
 
     public boolean isModifiable() {
@@ -24,5 +24,9 @@ public class NBTItem {
 
     public void makeTag() {
         if (getTag() == null) setTag(new TagCompound());
+    }
+
+    public ItemStack getItem() {
+        return stack;
     }
 }
