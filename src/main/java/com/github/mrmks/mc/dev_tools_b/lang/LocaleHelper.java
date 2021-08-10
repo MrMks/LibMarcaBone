@@ -37,8 +37,8 @@ public class LocaleHelper implements LanguageHelper {
         def = def == null ? "" : def;
         if (code == null) return def;
         String str = null;
-        if (file != null) str = file.get(code);
-        if (defFile != null && str == null) str = defFile.get(code);
+        if (file != null && file.has(code)) str = file.get(code);
+        if (str == null && defFile != null && defFile.has(code)) str = defFile.get(code);
         if (str == null) str = def;
         return str;
     }
