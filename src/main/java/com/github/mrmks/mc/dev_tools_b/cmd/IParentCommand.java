@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 
-interface IParentCommand extends ICommand {
+public interface IParentCommand extends ICommand {
     default void addChild(ISubCommand cmd) {
         getParent().addChild(cmd);
     }
