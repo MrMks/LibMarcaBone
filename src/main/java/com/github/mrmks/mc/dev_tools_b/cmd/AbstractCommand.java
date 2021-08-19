@@ -4,6 +4,7 @@ import com.github.mrmks.mc.dev_tools_b.lang.LanguageAPI;
 import com.github.mrmks.mc.dev_tools_b.lang.LanguageHelper;
 import com.github.mrmks.mc.dev_tools_b.lang.LocaleHelper;
 import com.github.mrmks.mc.dev_tools_b.utils.ArraySlice;
+import com.github.mrmks.mc.dev_tools_b.utils.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -36,7 +37,7 @@ public abstract class AbstractCommand implements ISubCommand {
         String perm = getPermission(), permMsg = getHelper(sender).trans(getPermissionMessage());
         if (permMsg == null || permMsg.isEmpty()) return;
         if (perm == null || perm.isEmpty()) perm = "none";
-        sender.sendMessage(permMsg.replace("<permission>", perm).split("\n"));
+        sender.sendMessage(StringUtils.replace(permMsg, "permission", perm).split("\n"));
     }
 
     @Override
@@ -44,9 +45,9 @@ public abstract class AbstractCommand implements ISubCommand {
         LanguageHelper helper = getHelper(sender);
         String desc = helper.trans(getDescription());
         if (desc != null && !desc.isEmpty()) sender.sendMessage(desc.split("\n"));
-        String usg = helper.trans(getUsage());
+        String usg = helper.trans(getUsage(), "command", fLabel);
         if (usg != null && !usg.isEmpty())
-            sender.sendMessage(usg.replace("<command>", fLabel).split("\n"));
+            sender.sendMessage(usg.split("\n"));
     }
 
     protected LanguageHelper getHelper(CommandSender sender) {

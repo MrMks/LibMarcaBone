@@ -1,16 +1,3 @@
 name: DevToolsB
 main: com.github.mrmks.mc.dev_tools_b.DevToolsB
 version: ${version}
-commands:
-  dtb:
-    description: base command of DevToolsB
-    usage: <command> <sub>
-    permission: dtbTools.*
-    permission-message: You have no permisison to do this
-permissions:
-  devTools.reload:
-    default: op
-  devTools.*:
-    children:
-      - devTools.reload
-    default: op

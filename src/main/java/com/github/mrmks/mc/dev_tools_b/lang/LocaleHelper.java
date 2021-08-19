@@ -1,5 +1,7 @@
 package com.github.mrmks.mc.dev_tools_b.lang;
 
+import com.github.mrmks.mc.dev_tools_b.utils.StringUtils;
+
 import java.util.Map;
 
 public class LocaleHelper implements LanguageHelper {
@@ -44,12 +46,22 @@ public class LocaleHelper implements LanguageHelper {
     }
 
     @Override
+    public String trans(String code, String key, String value) {
+        return StringUtils.replace(trans(code, code), key, value);
+    }
+
+    @Override
+    public String trans(String code, String def, String key, String value) {
+        return StringUtils.replace(trans(code, def), key, value);
+    }
+
+    @Override
     public String trans(String code, Map<String, String> map) {
-        return LanguageUtils.transWithTag(trans(code), map);
+        return StringUtils.replace(trans(code), map);
     }
 
     @Override
     public String trans(String code, String def, Map<String, String> map) {
-        return LanguageUtils.transWithTag(trans(code, def), map);
+        return StringUtils.replace(trans(code, def), map);
     }
 }
