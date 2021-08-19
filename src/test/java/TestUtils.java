@@ -3,6 +3,7 @@ import com.github.mrmks.mc.dev_tools_b.utils.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,5 +47,12 @@ public class TestUtils {
         Assert.assertEquals(tar, tar2);
         Assert.assertEquals(tar, tar3);
         System.out.printf("StringUtils: %d\nStringReplace: %d\nString.replace: %d", t1-t0, t2-t1, t3-t2);
+    }
+
+    @Test
+    public void testSplit() {
+        String srcA = "";
+        String[] res = StringUtils.split(srcA, ';');
+        System.out.println(Arrays.toString(res) + res.length);
     }
 }

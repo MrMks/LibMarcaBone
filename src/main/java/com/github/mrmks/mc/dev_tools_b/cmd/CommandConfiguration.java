@@ -5,19 +5,18 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 
 public class CommandConfiguration {
-    private YamlConfigurationLoader loader;
+    private final YamlConfigurationLoader loader;
     public CommandConfiguration(Plugin plugin) {
         this.loader = new YamlConfigurationLoader(plugin, "commands.yml");
         loader.saveDefaultConfig();
     }
 
-    public ISubCommand loadCommand(ISubCommand cmd) {
-        if (cmd instanceof IConfigurable) {
-            IConfigurable ccmd = (IConfigurable) cmd;
-            String path = ccmd.getConfigKey();
+    public <T extends IConfigurable> T loadCommand(T cmd) {
+        if (cmd != null) {
+            String path = cmd.getConfigKey();
             ConfigurationSection cfg = loader.getConfig();
             cfg = cfg.isConfigurationSection(path) ? cfg.getConfigurationSection(path) : cfg.createSection(path);
-            ccmd.loadConfig(cfg);
+            cmd.loadConfig(cfg);
         }
         return cmd;
     }

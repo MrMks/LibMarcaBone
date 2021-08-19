@@ -134,4 +134,29 @@ public enum EnumTagType {
                 return "";
         }
     }
+
+    public Class<?> getGetterType() {
+        switch (this) {
+            case BYTE:
+                return byte.class;
+            case SHORT:
+                return short.class;
+            case INT:
+                return int.class;
+            case LONG:
+                return long.class;
+            case FLOAT:
+                return float.class;
+            case DOUBLE:
+                return double.class;
+            case STRING:
+                return String.class;
+            case INT_ARRAY:
+                return int[].class;
+            case BYTE_ARRAY:
+                return byte[].class;
+            default:
+                return null;
+        }
+    }
 }

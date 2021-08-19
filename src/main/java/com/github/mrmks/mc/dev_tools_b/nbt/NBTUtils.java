@@ -1,35 +1,36 @@
 package com.github.mrmks.mc.dev_tools_b.nbt;
 
+import com.github.mrmks.mc.dev_tools_b.utils.ReflectConstructor;
+import com.github.mrmks.mc.dev_tools_b.utils.ReflectFieldGetter;
+import com.github.mrmks.mc.dev_tools_b.utils.ReflectMethod;
+import com.github.mrmks.mc.dev_tools_b.utils.ReflectStaticMethod;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 
 public class NBTUtils {
     private static boolean available;
-    private static final String p_nms;
-    private static final String p_obc;
+    private static String p_nms;
+    private static String p_obc;
 
     private static EnumMap<EnumTagType, Class<?>> classEnumMap;
-    private static EnumMap<EnumTagType, Constructor<?>> constructorEnumMap;
-    private static EnumMap<EnumTagType, Method> methodEnumMap;
+    private static EnumMap<EnumTagType, ReflectConstructor> constructorEnumMap;
+    private static EnumMap<EnumTagType, ReflectMethod> methodEnumMap;
     private static HashMap<Class<?>, EnumTagType> reClassMap;
-    private static Field fieldOfLongArrayTag;
+    private static ReflectFieldGetter fieldOfLongArrayTag;
 
-    private static Method[] listMethod;
-    private static Method[] compoundMethod;
+    private static ReflectMethod[] listMethod;
+    private static ReflectMethod[] compoundMethod;
 
     private static Class<?> classOfOBCItem;
     private static Class<?> classOfNMSItem;
-    private static Field fieldOfItemHandle;
-    private static Method[] nmsItemMethod;
+    private static ReflectFieldGetter fieldOfItemHandle;
+    private static ReflectMethod[] nmsItemMethod;
 
-    private static Method craftCopyMethod;
-    static {
+    private static ReflectStaticMethod craftCopyMethod;
+
+    public static void init() {
         String ver = Bukkit.getServer().getClass().getPackage().getName();
         p_obc = ver;
         p_nms = "net.minecraft.server." + ver.substring(ver.lastIndexOf(".") + 1);
@@ -50,7 +51,7 @@ public class NBTUtils {
 
                 if (type == EnumTagType.END) continue;
                 if (klass != null) {
-                    Constructor<?> c = type.hasConstructorParams() ? loadClassConstructor(klass, type.getConstructorParamTypes()) : loadClassConstructor(klass);
+                    ReflectConstructor c = type.hasConstructorParams() ? loadClassConstructor(klass, type.getConstructorParamTypes()) : loadClassConstructor(klass);
                     if (c != null) constructorEnumMap.put(type, c);
                     else available = false;
                 } else available = false;
@@ -63,19 +64,14 @@ public class NBTUtils {
                 if (!available) break;
                 Class<?> k = classEnumMap.get(type);
                 if (!type.getGetterName().isEmpty()) {
-                    try {
-                        methodEnumMap.put(type, loadMethod(k, type.getGetterName()));
-                    } catch (Throwable e) {
-                        available = false;
-                    }
+                    ReflectMethod rm = new ReflectMethod(k, type.getGetterName(), type.getGetterType());
+                    available = rm.isValid();
+                    if (available) methodEnumMap.put(type, rm);
                 } else {
                     if (type == EnumTagType.LONG_ARRAY) {
-                        try {
-                            fieldOfLongArrayTag = k.getDeclaredField("b");
-                            fieldOfLongArrayTag.setAccessible(true);
-                        } catch (Throwable e) {
-                            available = false;
-                        }
+                        ReflectFieldGetter rfg = new ReflectFieldGetter(k, "b", long[].class);
+                        available = rfg.isValid();
+                        if (available) fieldOfLongArrayTag = rfg;
                     }
                 }
             }
@@ -83,57 +79,61 @@ public class NBTUtils {
 
         if (available) {
             Class<?> k = classEnumMap.get(EnumTagType.LIST);
-            try {
-                listMethod = new Method[]{
-                        loadMethod(k, "add", nbt_base_klass),             //add
-                        loadMethod(k, "a", int.class, nbt_base_klass),    //add
-                        loadMethod(k, "i", int.class),                    //get
-                        loadMethod(k, "remove", int.class),               //remove
-                        loadMethod(k, "isEmpty"),                         //isEmpty
-                        loadMethod(k, "size")                             //size
-                };
-            } catch (Throwable e) {
-                available = false;
-            }
-            k = classEnumMap.get(EnumTagType.COMPOUND);
-            try {
-                compoundMethod = new Method[]{
-                        loadMethod(k, "set", String.class, nbt_base_klass),   //set
-                        loadMethod(k, "get", String.class),                   //get
-                        loadMethod(k, "remove", String.class),                //remove
-                        loadMethod(k, "isEmpty"),                             //isEmpty
-                        loadMethod(k, "d"),                                   //size
-                        loadMethod(k, "hasKey", String.class),                //hasKey
-                        loadMethod(k, "c")                                    //keySet
-                };
-            } catch (Throwable e) {
-                available = false;
-            }
+            listMethod = new ReflectMethod[]{
+                    new ReflectMethod(k, "add", void.class, nbt_base_klass),                //add
+                    new ReflectMethod(k, "a", void.class, int.class, nbt_base_klass),       //add
+                    new ReflectMethod(k, "i", nbt_base_klass, int.class),                   //get
+                    new ReflectMethod(k, "remove", nbt_base_klass, int.class),              //remove
+                    new ReflectMethod(k, "isEmpty", boolean.class),                         //isEmpty
+                    new ReflectMethod(k, "size", int.class)                                 //size
+            };
+            for (ReflectMethod rm : listMethod)
+                if (!rm.isValid()) {
+                    available = false;
+                    break;
+                }
+        }
+
+        if (available) {
+            Class<?> k = classEnumMap.get(EnumTagType.COMPOUND);
+            compoundMethod = new ReflectMethod[]{
+                    new ReflectMethod(k, "set", void.class, String.class, nbt_base_klass),      //set
+                    new ReflectMethod(k, "get", nbt_base_klass, String.class),                  //get
+                    new ReflectMethod(k, "remove", void.class, String.class),                   //remove
+                    new ReflectMethod(k, "isEmpty", boolean.class),                             //isEmpty
+                    new ReflectMethod(k, "d", int.class),                                       //size
+                    new ReflectMethod(k, "hasKey", boolean.class, String.class),                //hasKey
+                    new ReflectMethod(k, "c", Set.class)                                        //keySet
+            };
+            for (ReflectMethod rm : compoundMethod)
+                if (!rm.isValid()) {
+                    available = false;
+                    break;
+                }
         }
 
         if (available) {
             classOfOBCItem = loadOBCClass("inventory.CraftItemStack");
             classOfNMSItem = loadNMSClass("ItemStack");
             if (classOfNMSItem != null && classOfOBCItem != null) {
-                try {
-                    fieldOfItemHandle = classOfOBCItem.getDeclaredField("handle");
-                    fieldOfItemHandle.setAccessible(true);
-                    nmsItemMethod = new Method[] {
-                            loadMethod(classOfNMSItem, "getTag"),                                             // getTag
-                            loadMethod(classOfNMSItem, "setTag", classEnumMap.get(EnumTagType.COMPOUND))      // setTag
+                ReflectFieldGetter rfg = new ReflectFieldGetter(classOfOBCItem, "handle", classOfNMSItem);
+                available = rfg.isValid();
+                if (available) {
+                    fieldOfItemHandle = rfg;
+                    Class<?> tagK = classEnumMap.get(EnumTagType.COMPOUND);
+                    nmsItemMethod = new ReflectMethod[] {
+                            new ReflectMethod(classOfNMSItem, "getTag", tagK),                  // getTag
+                            new ReflectMethod(classOfNMSItem, "setTag", void.class, tagK)       // setTag
                     };
-                } catch (Throwable e) {
-                    available = false;
+                    for (ReflectMethod rm : nmsItemMethod) if (!rm.isValid()) {available = false;break;}
                 }
             } else available = false;
         }
 
         if (available) {
-            try {
-                craftCopyMethod = loadMethod(classOfOBCItem, "asCraftCopy", ItemStack.class);
-            } catch (Throwable tr) {
-                available = false;
-            }
+            ReflectStaticMethod rsm = new ReflectStaticMethod(classOfOBCItem, "asCraftCopy", classOfOBCItem, ItemStack.class);
+            available = rsm.isValid();
+            if (available) craftCopyMethod = rsm;
         }
 
         if (!available) {
@@ -180,27 +180,12 @@ public class NBTUtils {
         return ret;
     }
 
-    static Constructor<?> loadClassConstructor(Class<?> k, Class<?>... classes) {
-        try {
-            Constructor<?> c = k.getDeclaredConstructor(classes);
-            c.setAccessible(true);
-            return c;
-        } catch (Throwable e) {
-            return null;
-        }
-    }
-
-    static Method loadMethod(Class<?> k, String name, Class<?>... classes) throws NoSuchMethodException {
-        Method m = k.getDeclaredMethod(name, classes);
-        m.setAccessible(true);
-        return m;
+    static ReflectConstructor loadClassConstructor(Class<?> k, Class<?>... classes) {
+        ReflectConstructor rc = new ReflectConstructor(k, classes);
+        return rc.isValid() ? rc : null;
     }
 
     // new instance
-    static Object newInstance(EnumTagType type) {
-        return invokeConstructor(type, null);
-    }
-
     static Object newInstance(EnumTagType type, Object d) {
         return invokeConstructor(type, d);
     }
@@ -255,13 +240,13 @@ public class NBTUtils {
 
     private static Object invokeConstructor(EnumTagType type, Object data) {
         chkAv0();
-        Constructor<?> c = constructorEnumMap.get(type);
+        ReflectConstructor c = constructorEnumMap.get(type);
         try {
-            return type.hasConstructorParams() ? c.newInstance(data) : c.newInstance();
+            return type.hasConstructorParams() ? c.invoke(data) : c.invoke();
         } catch (Throwable tr) {
             // this should never happen since the reflect method has been tested in static code block;
             // when this happen, NBTUtils will stop itself;
-            available = false;
+            // available = false;
         }
         return null;
     }
@@ -271,14 +256,14 @@ public class NBTUtils {
         if (!type.getGetterName().isEmpty()) {
             try {
                 return methodEnumMap.get(type).invoke(tag.getNMSIns());
-            } catch (IllegalAccessException | InvocationTargetException e) {
+            } catch (Throwable e) {
                 return def;
             }
         } else {
             if (type == EnumTagType.LONG_ARRAY) {
                 try {
-                    return fieldOfLongArrayTag.get(tag.getNMSIns());
-                } catch (IllegalAccessException e) {
+                    return fieldOfLongArrayTag.invoke(tag.getNMSIns());
+                } catch (Throwable e) {
                     return def;
                 }
             }
@@ -510,7 +495,7 @@ public class NBTUtils {
                 return stack;
             } else {
                 try {
-                    return (ItemStack) craftCopyMethod.invoke(null, stack);
+                    return (ItemStack) craftCopyMethod.invoke(stack);
                 } catch (Throwable tr) {
                     return stack;
                 }
@@ -522,7 +507,7 @@ public class NBTUtils {
     static boolean isItemTagModifiable(Object stack) {
         if (available && classOfOBCItem.isInstance(stack)) {
             try {
-                Object nmsObj = fieldOfItemHandle.get(stack);
+                Object nmsObj = fieldOfItemHandle.invoke(stack);
                 if (classOfNMSItem.isInstance(nmsObj)) {
                     Object tag = nmsItemMethod[0].invoke(nmsObj);
                     nmsItemMethod[1].invoke(nmsObj, tag);
@@ -537,8 +522,8 @@ public class NBTUtils {
         chkAv0();
         if (classOfOBCItem.isInstance(stack)) {
             try {
-                return getItemStackTag(fieldOfItemHandle.get(stack));
-            } catch (IllegalAccessException e) {
+                return getItemStackTag(fieldOfItemHandle.invoke(stack));
+            } catch (Throwable e) {
                 return null;
             }
         } else if (classOfNMSItem.isInstance(stack)) {
@@ -549,7 +534,7 @@ public class NBTUtils {
                 } else {
                     return null;
                 }
-            } catch (IllegalAccessException | InvocationTargetException e) {
+            } catch (Throwable e) {
                 return null;
             }
         } else return null;
@@ -559,12 +544,12 @@ public class NBTUtils {
         chkAv0();
         if (classOfOBCItem.isInstance(stack)) {
             try {
-                setItemStackTag(fieldOfItemHandle.get(stack), tag);
-            } catch (IllegalAccessException ignored) {}
+                setItemStackTag(fieldOfItemHandle.invoke(stack), tag);
+            } catch (Throwable ignored) {}
         } else if (classOfNMSItem.isInstance(stack)) {
             try {
                 nmsItemMethod[1].invoke(stack, tag.getNMSIns());
-            } catch (IllegalAccessException | InvocationTargetException ignored) {}
+            } catch (Throwable ignored) {}
         }
     }
 

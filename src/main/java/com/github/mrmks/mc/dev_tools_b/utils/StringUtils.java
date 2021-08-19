@@ -1,5 +1,6 @@
 package com.github.mrmks.mc.dev_tools_b.utils;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class StringUtils {
@@ -57,5 +58,23 @@ public class StringUtils {
             }
         }
         return bd;
+    }
+
+    public static String[] split(String src, char sp) {
+        return split(src, sp, false);
+    }
+
+    public static String[] split(String src, char sp, boolean rmEmpty) {
+        int cur = src.indexOf(sp), last = -1;
+        if (cur < 0) return rmEmpty && src.isEmpty() ? new String[0] : new String[]{src};
+        ArrayList<String> list = new ArrayList<>(4);
+        do {
+            if (last + 1 < cur || (!rmEmpty && last + 1 == cur))
+                list.add(src.substring(last + 1, cur));
+            last = cur;
+        } while ((cur = src.indexOf(sp, cur + 1)) > 0);
+        if (last + 1 < src.length() || (!rmEmpty && last + 1 == src.length()))
+            list.add(src.substring(last + 1));
+        return list.toArray(new String[0]);
     }
 }
