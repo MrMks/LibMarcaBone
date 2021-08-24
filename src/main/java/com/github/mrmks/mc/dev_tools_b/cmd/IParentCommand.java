@@ -10,18 +10,18 @@ public interface IParentCommand extends ICommand {
         getParent().addChild(cmd);
     }
 
-    default boolean execute(CommandSender sender, String label, String fLabel, ArraySlice<String> slice) {
+    default boolean execute(CommandSender sender, String label, List<String> fLabel, ArraySlice<String> slice) {
         return getParent().execute(this, sender, label, fLabel, slice);
     }
 
     @Override
-    default List<String> complete(CommandSender sender, String label, String fLabel, ArraySlice<String> args) {
+    default List<String> complete(CommandSender sender, String label, List<String> fLabel, ArraySlice<String> args) {
         return getParent().complete(sender, label, fLabel, args);
     }
 
-    default boolean executeSelf(CommandSender sender, String label, String fLabel, ArraySlice<String> args) {
-        return false;
-    }
+    void noSuchCommand(CommandSender sender, String label, List<String> fLabel, ArraySlice<String> args, List<String> av);
+
+    void displayAvailableSubs(CommandSender sender, String label, List<String> fLabel, List<String> subs);
 
     CommandParent getParent();
 }

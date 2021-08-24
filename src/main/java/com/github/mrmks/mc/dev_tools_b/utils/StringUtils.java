@@ -1,6 +1,7 @@
 package com.github.mrmks.mc.dev_tools_b.utils;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class StringUtils {
@@ -76,5 +77,21 @@ public class StringUtils {
         if (last + 1 < src.length() || (!rmEmpty && last + 1 == src.length()))
             list.add(src.substring(last + 1));
         return list.toArray(new String[0]);
+    }
+
+    public static String append(List<String> lst, String sp) {
+        if (lst == null || lst.isEmpty()) return "";
+        if (lst.size() == 1) return lst.get(0);
+        StringBuilder bd = new StringBuilder();
+        for (String str : lst) bd.append(str).append(sp);
+        return bd.substring(0, bd.length() - sp.length());
+    }
+
+    public static String append(List<String> lst, char sp) {
+        if (lst == null || lst.isEmpty()) return "";
+        if (lst.size() == 1) return lst.get(0);
+        StringBuilder bd = new StringBuilder();
+        for (String str : lst) bd.append(str).append(sp);
+        return bd.substring(0, bd.length() - 1);
     }
 }

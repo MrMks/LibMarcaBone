@@ -18,23 +18,37 @@ import static com.github.mrmks.mc.dev_tools_b.lang.LanguageFile.EMPTY;
 
 public class LanguageAPI {
 
+    private static LanguageAPI buildIn;
     public static void init(DevToolsB plugin) {
         Bukkit.getPluginManager().registerEvents(PlayerLocaleManager.getInstance().generateListener(), plugin);
+        buildIn = new LanguageAPI(plugin);
     }
     public static void cleanup() {
+        buildIn = null;
         PlayerLocaleManager.getInstance().clear();
     }
+    public static LanguageAPI getBuildIn() {
+        return buildIn;
+    }
 
-    protected String LOCALE_KEY = "locale";
-    protected String TRANSLATION_KEY = "translation";
+    public static final String LOCALE_KEY = "locale";
+    public static final String TRANSLATION_KEY = "translation";
 
 
     private final HashMap<String, LanguageFile> localeMap = new HashMap<>();
     private LanguageFile defaultLocale = EMPTY;
     private final Plugin plugin;
+    private final String[] ext;
 
     public LanguageAPI(Plugin plugin) {
         this.plugin = plugin;
+        this.ext = new String[0];
+        load0();
+    }
+
+    public LanguageAPI(Plugin plugin, String... ext) {
+        this.plugin = plugin;
+        this.ext = ext;
         load0();
     }
 
@@ -49,7 +63,22 @@ public class LanguageAPI {
         loader.saveDefaultConfig();
         FileConfiguration configuration = loader.getConfig();
         if (configuration != null) {
+            loader.saveConfig();
             defaultLocale = new LanguageFile(configuration, LOCALE_KEY, TRANSLATION_KEY);
+        }
+        for (String e : ext) {
+            loader = new YamlConfigurationLoader(plugin, "lang/" + e + ".yml");
+            loader.saveDefaultConfig();
+            configuration = loader.getConfig();
+            if (configuration != null) {
+                loader.saveConfig();
+                LanguageFile lf = new LanguageFile(configuration, LOCALE_KEY, TRANSLATION_KEY);
+                if (localeMap.containsKey(lf.getLocale())) {
+                    localeMap.get(lf.getLocale()).merge(lf);
+                } else {
+                    localeMap.put(lf.getLocale(), lf);
+                }
+            }
         }
         File file = new File(plugin.getDataFolder(), "lang");
         readTranslations(file, plugin.getLogger());

@@ -6,9 +6,6 @@ import org.bukkit.command.CommandSender;
 import java.util.List;
 
 public interface ICommand {
-    boolean execute(CommandSender sender, String label, String fLabel, ArraySlice<String> args);
-    List<String> complete(CommandSender sender, String label, String fLabel, ArraySlice<String> args);
-    boolean testPermission(CommandSender sender, String label, String fLabel, ArraySlice<String> args);
-    void noPermissionMessage(CommandSender sender, String label, String fLabel, ArraySlice<String> args);
-    void displayUsage(CommandSender sender, String label, String fLabel, ArraySlice<String> args);
+    boolean execute(CommandSender sender, String label, List<String> fLabel, ArraySlice<String> args);
+    List<String> complete(CommandSender sender, String label, List<String> fLabel, ArraySlice<String> args);
 }

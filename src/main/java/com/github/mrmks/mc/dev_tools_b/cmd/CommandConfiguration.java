@@ -12,7 +12,7 @@ public class CommandConfiguration {
     }
 
     public <T extends IConfigurable> T loadCommand(T cmd) {
-        if (cmd != null) {
+        if (cmd != null && cmd.hasConfigKey()) {
             String path = cmd.getConfigKey();
             ConfigurationSection cfg = loader.getConfig();
             cfg = cfg.isConfigurationSection(path) ? cfg.getConfigurationSection(path) : cfg.createSection(path);

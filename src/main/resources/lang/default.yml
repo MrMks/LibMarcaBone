@@ -1,0 +1,8 @@
+locale: en_us
+translation:
+  buildin.cmd:
+    parent_no_such_child: We can't find the such child command
+    parent_available_child: "You can use there child commands:"
+    help_topic_description: "Description"
+    help_topic_usage: "Usage"
+    help_topic_aliases: "Aliases"

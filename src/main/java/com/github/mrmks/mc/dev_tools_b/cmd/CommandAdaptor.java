@@ -1,24 +1,24 @@
 package com.github.mrmks.mc.dev_tools_b.cmd;
 
+import com.github.mrmks.mc.dev_tools_b.lang.LanguageAPI;
 import com.github.mrmks.mc.dev_tools_b.utils.ArraySlice;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class CommandAdaptor implements TabExecutor, IParentCommand {
+public class CommandAdaptor extends AbstractCommand implements IParentCommand, TabExecutor {
 
-    private final CommandParent parent = new CommandParent();
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        return execute(sender, label, label, new ArgSlice(args));
+    private final CommandParent parent;
+    public CommandAdaptor() {
+        this(null);
     }
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        return complete(sender, label, label, new ArgSlice(args));
+    public CommandAdaptor(LanguageAPI api) {
+        super(api, null);
+        this.parent = new CommandParent();
     }
 
     @Override
@@ -27,13 +27,12 @@ public class CommandAdaptor implements TabExecutor, IParentCommand {
     }
 
     @Override
-    public boolean testPermission(CommandSender sender, String label, String fLabel, ArraySlice<String> args) {
-        return true;
+    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        return execute(commandSender, s, new ArrayList<>(), new ArgSlice(strings));
     }
 
     @Override
-    public void noPermissionMessage(CommandSender sender, String label, String fLabel, ArraySlice<String> args) {}
-
-    @Override
-    public void displayUsage(CommandSender sender, String label, String fLabel, ArraySlice<String> args) {}
+    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+        return complete(commandSender, s, new ArrayList<>(), new ArgSlice(strings));
+    }
 }

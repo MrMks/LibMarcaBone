@@ -3,9 +3,7 @@ import com.github.mrmks.mc.dev_tools_b.utils.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class TestUtils {
 
@@ -54,5 +52,10 @@ public class TestUtils {
         String srcA = "";
         String[] res = StringUtils.split(srcA, ';');
         System.out.println(Arrays.toString(res) + res.length);
+
+        List<String> lst = new ArrayList<>();
+        lst.add("avd");
+        lst.add("fdjs");
+        System.out.println(StringUtils.append(lst, ';'));
     }
 }

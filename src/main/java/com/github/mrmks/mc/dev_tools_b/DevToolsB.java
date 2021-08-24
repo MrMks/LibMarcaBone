@@ -17,10 +17,12 @@ public class DevToolsB extends JavaPlugin {
     @Override
     public void onEnable() {
         LanguageAPI.init(this);
+        getCommand("dtbr").setExecutor(new ExecutorReload(LanguageAPI.getBuildIn()));
     }
 
     @Override
     public void onDisable() {
+        getCommand("dtbr").setExecutor(null);
         HandlerList.unregisterAll(this);
         LanguageAPI.cleanup();
     }

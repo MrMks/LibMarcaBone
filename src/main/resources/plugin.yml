@@ -1,3 +1,11 @@
 name: DevToolsB
 main: com.github.mrmks.mc.dev_tools_b.DevToolsB
 version: ${version}
+commands:
+  dtbr:
+    description: reload build-in language files
+    usage: <command>
+    permission: dtb.perm.reload
+permissions:
+  dtb.perm.reload:
+    default: op
