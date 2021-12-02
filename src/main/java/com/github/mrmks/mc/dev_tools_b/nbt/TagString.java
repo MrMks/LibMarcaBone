@@ -1,6 +1,6 @@
 package com.github.mrmks.mc.dev_tools_b.nbt;
 
-public class TagString extends TagValued {
+public final class TagString extends TagValued {
     TagString(){}
     public TagString(String str) {
         super(str);

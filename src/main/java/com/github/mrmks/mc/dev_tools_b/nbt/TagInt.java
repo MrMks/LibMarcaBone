@@ -1,6 +1,6 @@
 package com.github.mrmks.mc.dev_tools_b.nbt;
 
-public class TagInt extends TagValued {
+public final class TagInt extends TagValued {
     TagInt(){}
     public TagInt(int data) {
         super(data);

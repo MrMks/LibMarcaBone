@@ -1,15 +1,8 @@
 package com.github.mrmks.mc.dev_tools_b.nbt;
 
-public class TagList extends TagBase {
+public final class TagList extends TagBase {
 
-    public TagList() {
-        this(true);
-    }
-
-    protected TagList(boolean def) {
-        if (def)
-            nmsInstance = NBTUtils.newList();
-    }
+    public TagList() {}
 
     @Override
     public EnumTagType getType() {

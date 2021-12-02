@@ -1,6 +1,6 @@
 package com.github.mrmks.mc.dev_tools_b.nbt;
 
-public class TagIntArray extends TagValued {
+public final class TagIntArray extends TagValued {
     TagIntArray(){}
     public TagIntArray(int[] data) {
         super(data);

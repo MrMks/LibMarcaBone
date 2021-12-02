@@ -2,27 +2,13 @@ package com.github.mrmks.mc.dev_tools_b.nbt;
 
 import java.util.Set;
 
-public class TagCompound extends TagBase {
+public final class TagCompound extends TagBase {
 
-    public TagCompound() {
-        this(true);
-    }
-
-    protected TagCompound(boolean def) {
-        if (def)
-            nmsInstance = NBTUtils.newCompound();
-    }
+    public TagCompound() {}
 
     @Override
     public EnumTagType getType() {
         return EnumTagType.COMPOUND;
-    }
-
-    @Override
-    protected Object getNMSIns() {
-        if (nmsInstance == null)
-            nmsInstance = NBTUtils.newCompound();
-        return nmsInstance;
     }
 
     public TagBase getTag(String key) {

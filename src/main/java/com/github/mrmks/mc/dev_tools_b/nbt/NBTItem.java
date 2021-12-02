@@ -2,9 +2,10 @@ package com.github.mrmks.mc.dev_tools_b.nbt;
 
 import org.bukkit.inventory.ItemStack;
 
-public class NBTItem {
+public final class NBTItem {
     private final boolean modifiable;
     private final ItemStack stack;
+
     public NBTItem(ItemStack stack) {
         this.stack = NBTUtils.wrapCopy(stack);
         modifiable = NBTUtils.isItemTagModifiable(this.stack);

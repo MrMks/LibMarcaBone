@@ -4,15 +4,15 @@ import com.github.mrmks.mc.dev_tools_b.utils.ReflectConstructor;
 import com.github.mrmks.mc.dev_tools_b.utils.ReflectFieldGetter;
 import com.github.mrmks.mc.dev_tools_b.utils.ReflectMethod;
 import com.github.mrmks.mc.dev_tools_b.utils.ReflectStaticMethod;
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
+import static com.github.mrmks.mc.dev_tools_b.utils.ReflectUtils.loadNMSClass;
+import static com.github.mrmks.mc.dev_tools_b.utils.ReflectUtils.loadOBCClass;
+
 public class NBTUtils {
     private static boolean available;
-    private static String p_nms;
-    private static String p_obc;
 
     private static EnumMap<EnumTagType, Class<?>> classEnumMap;
     private static EnumMap<EnumTagType, ReflectConstructor> constructorEnumMap;
@@ -31,11 +31,8 @@ public class NBTUtils {
     private static ReflectStaticMethod craftCopyMethod;
 
     public static void init() {
-        String ver = Bukkit.getServer().getClass().getPackage().getName();
-        p_obc = ver;
-        p_nms = "net.minecraft.server." + ver.substring(ver.lastIndexOf(".") + 1);
-        available = true;
 
+        available = true;
         Class<?> nbt_base_klass = loadNMSClass("NBTBase");
         if (nbt_base_klass == null) available = false;
 
@@ -139,16 +136,37 @@ public class NBTUtils {
         if (!available) {
             craftCopyMethod = null;
             classOfOBCItem = null;
-            classOfOBCItem = null;
+            classOfNMSItem = null;
             fieldOfItemHandle = null;
             fieldOfLongArrayTag = null;
-            if (classEnumMap != null) classEnumMap.clear();
-            if (reClassMap != null) reClassMap.clear();
-            if (constructorEnumMap != null) constructorEnumMap.clear();
-            if (methodEnumMap != null) methodEnumMap.clear();
-            if (listMethod != null) Arrays.fill(listMethod, null);
-            if (compoundMethod != null) Arrays.fill(compoundMethod, null);
-            if (nmsItemMethod != null) Arrays.fill(nmsItemMethod, null);
+            if (classEnumMap != null) {
+                classEnumMap.clear();
+                classEnumMap = null;
+            }
+            if (reClassMap != null) {
+                reClassMap.clear();
+                reClassMap = null;
+            }
+            if (constructorEnumMap != null) {
+                constructorEnumMap.clear();
+                constructorEnumMap = null;
+            }
+            if (methodEnumMap != null) {
+                methodEnumMap.clear();
+                methodEnumMap = null;
+            }
+            if (listMethod != null) {
+                Arrays.fill(listMethod, null);
+                listMethod = null;
+            }
+            if (compoundMethod != null) {
+                Arrays.fill(compoundMethod, null);
+                compoundMethod = null;
+            }
+            if (nmsItemMethod != null) {
+                Arrays.fill(nmsItemMethod, null);
+                nmsItemMethod = null;
+            }
         }
     }
 
@@ -162,25 +180,7 @@ public class NBTUtils {
         }
     }
 
-    // reflect methods
-    // this method will return null if the class can't be found
-    static Class<?> loadNMSClass(String klassName) {
-        chkAv0();
-        return loadClass(p_nms, klassName);
-    }
-
-    static Class<?> loadOBCClass(String klassName) {
-        chkAv0();
-        return loadClass(p_obc, klassName);
-    }
-
-    private static Class<?> loadClass(String pkg, String kls) {
-        Class<?> ret = null;
-        try {ret = Class.forName(pkg + '.' + kls);} catch (Throwable ignored){}
-        return ret;
-    }
-
-    static ReflectConstructor loadClassConstructor(Class<?> k, Class<?>... classes) {
+    private static ReflectConstructor loadClassConstructor(Class<?> k, Class<?>... classes) {
         ReflectConstructor rc = new ReflectConstructor(k, classes);
         return rc.isValid() ? rc : null;
     }
@@ -362,9 +362,9 @@ public class NBTUtils {
             case LONG_ARRAY:
                 return new TagLongArray();
             case LIST:
-                return new TagList(false);
+                return new TagList();
             case COMPOUND:
-                return new TagCompound(false);
+                return new TagCompound();
             case END:
             default:
                 return new TagEnd();

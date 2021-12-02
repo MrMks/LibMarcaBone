@@ -36,33 +36,6 @@ public enum EnumTagType {
         }
     }
 
-    Object getTestParams() {
-        switch (this) {
-            case BYTE:
-                return (byte)0;
-            case SHORT:
-                return (short)0;
-            case INT:
-                return 0;
-            case LONG:
-                return 0L;
-            case FLOAT:
-                return 0.0F;
-            case DOUBLE:
-                return 0.0D;
-            case BYTE_ARRAY:
-                return new byte[]{0};
-            case STRING:
-                return "0";
-            case INT_ARRAY:
-                return new int[]{0};
-            case LONG_ARRAY:
-                return new long[]{0L};
-            default:
-                return null;
-        }
-    }
-
     boolean hasConstructorParams() {
         switch (this) {
             case BYTE:
@@ -135,7 +108,7 @@ public enum EnumTagType {
         }
     }
 
-    public Class<?> getGetterType() {
+    Class<?> getGetterType() {
         switch (this) {
             case BYTE:
                 return byte.class;

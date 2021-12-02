@@ -1,6 +1,6 @@
 package com.github.mrmks.mc.dev_tools_b.nbt;
 
-public class TagLong extends TagValued {
+public final class TagLong extends TagValued {
     TagLong(){}
     public TagLong(long data) {
         super(data);
