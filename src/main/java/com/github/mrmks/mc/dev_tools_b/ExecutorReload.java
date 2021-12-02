@@ -1,24 +1,27 @@
 package com.github.mrmks.mc.dev_tools_b;
 
 import com.github.mrmks.mc.dev_tools_b.lang.LanguageAPI;
+import com.github.mrmks.mc.dev_tools_b.lang.LanguageHelper;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
 
 public class ExecutorReload implements TabExecutor {
 
-    private final LanguageAPI api;
-    public ExecutorReload(LanguageAPI api) {
-        this.api = api;
-    }
-
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        api.reload();
-        commandSender.sendMessage("Build-in language file reloaded");
+        LanguageAPI api = LanguageAPI.getBuildIn();
+        if (api != null) {
+            api.reload();
+            LanguageHelper helper = commandSender instanceof Player ? api.helper((Player) commandSender) : api.helper();
+            commandSender.sendMessage(helper.trans("buildin.reload"));
+        } else {
+            commandSender.sendMessage("Build-in language file reloaded");
+        }
         return true;
     }
 

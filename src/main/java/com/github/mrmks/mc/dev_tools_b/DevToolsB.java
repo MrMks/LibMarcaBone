@@ -17,7 +17,7 @@ public class DevToolsB extends JavaPlugin {
     @Override
     public void onEnable() {
         LanguageAPI.init(this);
-        getCommand("dtbr").setExecutor(new ExecutorReload(LanguageAPI.getBuildIn()));
+        getCommand("dtbr").setExecutor(new ExecutorReload());
     }
 
     @Override
