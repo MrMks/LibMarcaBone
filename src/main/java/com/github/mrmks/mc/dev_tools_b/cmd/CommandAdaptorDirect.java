@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This is used to implement a command without any sub commands.
+ */
 public abstract class CommandAdaptorDirect extends AbstractCommand implements ISubCommand, TabExecutor {
 
     private final CommandProperty property;

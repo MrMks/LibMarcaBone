@@ -4,6 +4,9 @@ import com.github.mrmks.mc.dev_tools_b.utils.YamlConfigurationLoader;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 
+/**
+ * This is an optional feature, you can use a commands.yml to control your command behaviors.
+ */
 public class CommandConfiguration {
     private final YamlConfigurationLoader loader;
     public CommandConfiguration(Plugin plugin) {

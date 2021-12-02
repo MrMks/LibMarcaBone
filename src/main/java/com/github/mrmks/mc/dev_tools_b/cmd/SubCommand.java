@@ -2,6 +2,9 @@ package com.github.mrmks.mc.dev_tools_b.cmd;
 
 import com.github.mrmks.mc.dev_tools_b.lang.LanguageAPI;
 
+/**
+ * This is used to implement a parent command.
+ */
 public class SubCommand extends FunctionCommand implements IParentCommand {
 
     CommandParent parent;

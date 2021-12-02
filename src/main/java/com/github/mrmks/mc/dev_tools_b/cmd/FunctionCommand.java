@@ -8,6 +8,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class used to implement your command functions.
+ */
 public abstract class FunctionCommand extends AbstractCommand implements ISubCommand {
     private final CommandProperty property;
     protected FunctionCommand(LanguageAPI api, String cfg, String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
