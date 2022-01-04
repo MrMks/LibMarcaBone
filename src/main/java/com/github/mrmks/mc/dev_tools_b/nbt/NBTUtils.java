@@ -23,7 +23,7 @@ public class NBTUtils {
     private static NBTMethods methods;
     public static void init(ConfigurationSection cs) {
         available = true;
-        NBTMethods[] ms = new NBTMethods[]{/*new DirectCall(), */new ReflectCall(cs)};
+        NBTMethods[] ms = new NBTMethods[]{new DirectCall(), new ReflectCall(cs)};
         for (NBTMethods m : ms) {
             if (m.init() && testMethods(m)) {
                 methods = m;
