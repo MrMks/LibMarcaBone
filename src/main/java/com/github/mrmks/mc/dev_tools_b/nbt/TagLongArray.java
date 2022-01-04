@@ -1,14 +1,14 @@
 package com.github.mrmks.mc.dev_tools_b.nbt;
 
-public final class TagLongArray extends TagValued {
+public final class TagLongArray extends TagBase {
     TagLongArray(){}
     public TagLongArray(long[] data) {
-        super(data);
+        wrapNMSIns(NBTUtils.newLongArray(data));
     }
 
     @Override
-    public EnumTagType getType() {
-        return EnumTagType.LONG_ARRAY;
+    public NBTType getType() {
+        return NBTType.LONG_ARRAY;
     }
 
     public long[] getData() {

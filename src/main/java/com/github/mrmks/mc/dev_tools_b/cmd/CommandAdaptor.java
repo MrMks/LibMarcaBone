@@ -28,11 +28,11 @@ public class CommandAdaptor extends AbstractCommand implements IParentCommand, T
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        return execute(commandSender, s, new ArrayList<>(), new ArgSlice(strings));
+        return execute(commandSender, s, new ArrayList<>(), new ArraySlice<>(strings));
     }
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
-        return complete(commandSender, s, new ArrayList<>(), new ArgSlice(strings));
+        return complete(commandSender, s, new ArrayList<>(), new ArraySlice<>(strings));
     }
 }

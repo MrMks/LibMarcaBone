@@ -34,4 +34,12 @@ public class ReflectMethod {
         System.arraycopy(args, 0, a, 1, args.length);
         return f ? hd.invokeWithArguments(a) : mt.invoke(base, args);
     }
+
+    public Object tryInvoke(Object base, Object _def, Object... args) {
+        try {
+            return invoke(base, args);
+        } catch (Throwable tr) {
+            return _def;
+        }
+    }
 }

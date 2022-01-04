@@ -30,4 +30,12 @@ public class ReflectFieldGetter {
     public Object invoke(Object base) throws Throwable {
         return f ? hd.invoke(base) : fd.get(base);
     }
+
+    public Object tryInvoke(Object base, Object _def) {
+        try {
+            return invoke(base);
+        } catch (Throwable tr) {
+            return _def;
+        }
+    }
 }

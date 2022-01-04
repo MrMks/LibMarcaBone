@@ -1,0 +1,57 @@
+base: "net.minecraft.server.v1_12_R1.NBTBase"
+end: "net.minecraft.server.v1_12_R1.NBTTagEnd"
+byte: "net.minecraft.server.v1_12_R1.NBTTagByte#g"
+short: "net.minecraft.server.v1_12_R1.NBTTagShort#f"
+int: "net.minecraft.server.v1_12_R1.NBTTagInt#e"
+long: "net.minecraft.server.v1_12_R1.NBTTagLong#d"
+float: "net.minecraft.server.v1_12_R1.NBTTagFloat#i"
+double: "net.minecraft.server.v1_12_R1.NBTTagDouble#asDouble"
+byte_array: "net.minecraft.server.v1_12_R1.NBTTagByteArray#c"
+string: "net.minecraft.server.v1_12_R1.NBTTagString#c_"
+int_array: "net.minecraft.server.v1_12_R1.NBTTagIntArray#d"
+long_array: "net.minecraft.server.v1_12_R1.NBTTagLongArray#b"
+
+list:
+  klass: "net.minecraft.server.v1_12_R1.NBTTagList"
+  get: "i"
+  set: "a"
+  add: "add"
+  remove: "remove"
+  size: "size"
+  isEmpty: "isEmpty"
+
+compound:
+  klass: "net.minecraft.server.v1_12_R1.NBTTagCompound"
+  get: "get"
+  set: "set"
+  remove: "remove"
+  hasKey: "hasKey"
+  size: "d"
+  isEmpty: "isEmpty"
+  keySet: "c"
+
+# s(save)
+# l(load),param
+# iv(invoke_virtual),method_name,caller,params
+# ist(invoke_static),method_name,caller_klass,params
+# fg(field_get),field_name,caller
+# fs(field_set),field_name,caller,param
+
+# you should use an index to figure out which obj to use.
+# -1 will be the result of last operation(only available behind iv, ist, fg, ag)
+# operation 's' save the -1 to a stored data list, use index 0~n for these objects.
+
+bukkitItemStackTransform:
+  target: "org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack"
+  step:
+    - 1
+    - ist,asCraftCopy,org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack,0
+
+nmsItemStackTransform:
+  target: "net.minecraft.server.v1_12_R1.ItemStack"
+  get: getTag
+  set: setTag
+  has: hasTag
+  step:
+    - 1
+    - fg,handle,0

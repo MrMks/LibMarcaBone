@@ -1,14 +1,14 @@
 package com.github.mrmks.mc.dev_tools_b.nbt;
 
-public final class TagString extends TagValued {
+public final class TagString extends TagBase {
     TagString(){}
     public TagString(String str) {
-        super(str);
+        wrapNMSIns(NBTUtils.newString(str));
     }
 
     @Override
-    public EnumTagType getType() {
-        return EnumTagType.STRING;
+    public NBTType getType() {
+        return NBTType.STRING;
     }
 
     public String getData() {

@@ -27,18 +27,6 @@ public abstract class CommandAdaptorDirect extends AbstractCommand implements IS
         this.cmd = cmd;
     }
 
-    public CommandAdaptorDirect(LanguageAPI api, PluginCommand cmd) {
-        this(api, null, cmd);
-    }
-
-    public CommandAdaptorDirect(String cfg, PluginCommand cmd) {
-        this(null, cfg, cmd);
-    }
-
-    public CommandAdaptorDirect(PluginCommand cmd) {
-        this(null, null, cmd);
-    }
-
     @Override
     public boolean testPermission(CommandSender sender) {
         return testPermission(sender, getPermission());
@@ -96,12 +84,12 @@ public abstract class CommandAdaptorDirect extends AbstractCommand implements IS
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        return execute(commandSender, s, new ArrayList<>(), new ArgSlice(strings));
+        return execute(commandSender, s, new ArrayList<>(), new ArraySlice<>(strings));
     }
 
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
-        return complete(commandSender, s, new ArrayList<>(), new ArgSlice(strings));
+        return complete(commandSender, s, new ArrayList<>(), new ArraySlice<>(strings));
     }
 
     public void registerHelpTopic(HelpMap helpMap) {

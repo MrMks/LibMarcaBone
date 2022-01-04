@@ -60,8 +60,8 @@ public abstract class TagBase {
     }
 
     protected final boolean testInstance() {
-        return NBTUtils.isInstanceOf(getType(), nmsInstance);
+        return NBTUtils.testInstance(getType(), nmsInstance);
     }
 
-    public abstract EnumTagType getType();
+    public abstract NBTType getType();
 }

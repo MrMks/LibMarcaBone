@@ -6,7 +6,7 @@ import org.bukkit.command.PluginCommand;
 /**
  * Since {@link CommandAdaptorDirect} is not for commands with sub commands, this class will take that duty.
  */
-public class CommandAdaptorSub extends CommandAdaptorDirect implements IParentCommand {
+public class CommandAdaptorSub extends CommandAdaptorDirect implements IParentSubCommand {
 
     CommandParent parent;
     public CommandAdaptorSub(LanguageAPI api, String cfg, PluginCommand cmd) {

@@ -16,6 +16,10 @@ public interface IParentCommand extends ICommand {
         for (ISubCommand cmd : cmds) addChild(cmd);
     }
 
+    default void addChild(ISubCommand... cmds) {
+        for (ISubCommand cmd : cmds) addChild(cmd);
+    }
+
     default boolean execute(CommandSender sender, String label, List<String> fLabel, ArraySlice<String> slice) {
         return getParent().execute(this, sender, label, fLabel, slice);
     }

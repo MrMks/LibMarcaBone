@@ -5,8 +5,8 @@ public final class TagList extends TagBase {
     public TagList() {}
 
     @Override
-    public EnumTagType getType() {
-        return EnumTagType.LIST;
+    public NBTType getType() {
+        return NBTType.LIST;
     }
 
     public void addTag(TagBase tag) {

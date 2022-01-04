@@ -33,4 +33,12 @@ public class ReflectConstructor {
     public Object invoke(Object... args) throws Throwable {
         return f ? hd.invokeWithArguments(args) : ct.newInstance(args);
     }
+
+    public Object tryInvoke(Object _def, Object... args) {
+        try {
+            return invoke(args);
+        } catch (Throwable tr) {
+            return _def;
+        }
+    }
 }

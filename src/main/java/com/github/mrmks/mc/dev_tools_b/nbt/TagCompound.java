@@ -7,8 +7,8 @@ public final class TagCompound extends TagBase {
     public TagCompound() {}
 
     @Override
-    public EnumTagType getType() {
-        return EnumTagType.COMPOUND;
+    public NBTType getType() {
+        return NBTType.COMPOUND;
     }
 
     public TagBase getTag(String key) {

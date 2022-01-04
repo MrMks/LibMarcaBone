@@ -1,14 +1,14 @@
 package com.github.mrmks.mc.dev_tools_b.nbt;
 
-public final class TagLong extends TagValued {
+public final class TagLong extends TagBase {
     TagLong(){}
     public TagLong(long data) {
-        super(data);
+        wrapNMSIns(NBTUtils.newLong(data));
     }
 
     @Override
-    public EnumTagType getType() {
-        return EnumTagType.LONG;
+    public NBTType getType() {
+        return NBTType.LONG;
     }
 
     public long getData() {

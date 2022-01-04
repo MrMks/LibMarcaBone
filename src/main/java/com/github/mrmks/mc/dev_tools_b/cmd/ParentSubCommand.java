@@ -5,15 +5,15 @@ import com.github.mrmks.mc.dev_tools_b.lang.LanguageAPI;
 /**
  * This is used to implement a parent command.
  */
-public class SubCommand extends FunctionCommand implements IParentCommand {
+public class ParentSubCommand extends FunctionCommand implements IParentSubCommand {
 
     CommandParent parent;
-    public SubCommand(LanguageAPI api, String cfg, String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
+    public ParentSubCommand(LanguageAPI api, String cfg, String name, String[] aliases, String desc, String usg, String perm, String permMsg) {
         super(api, cfg, name, aliases, desc, usg, perm, permMsg);
         this.parent = new CommandParent();
     }
 
-    public SubCommand(String name, String desc, String usg, String perm, String permMsg) {
+    public ParentSubCommand(String name, String desc, String usg, String perm, String permMsg) {
         super(name, null, desc, usg, perm, permMsg);
         this.parent = new CommandParent();
     }
@@ -23,7 +23,7 @@ public class SubCommand extends FunctionCommand implements IParentCommand {
         return parent;
     }
 
-    public static SubCommand auto(LanguageAPI api, String prefix, String node, String[] aliases) {
+    public static ParentSubCommand auto(LanguageAPI api, String prefix, String node, String[] aliases) {
         node = "cmd.".concat(node);
         String cmdPrefix = prefix + '.' + node;
 
@@ -33,7 +33,7 @@ public class SubCommand extends FunctionCommand implements IParentCommand {
             name = node.substring(index + 1);
         }
 
-        return new SubCommand(api, cmdPrefix, name, aliases,
+        return new ParentSubCommand(api, cmdPrefix, name, aliases,
                 cmdPrefix.concat(".desc"),
                 cmdPrefix.concat(".usg"),
                 prefix + ".perm." + node,

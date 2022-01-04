@@ -1,14 +1,14 @@
 package com.github.mrmks.mc.dev_tools_b.nbt;
 
-public final class TagByteArray extends TagValued {
+public final class TagByteArray extends TagBase {
     TagByteArray(){}
     public TagByteArray(byte[] data) {
-        super(data);
+        wrapNMSIns(NBTUtils.newByteArray(data));
     }
 
     @Override
-    public EnumTagType getType() {
-        return EnumTagType.BYTE_ARRAY;
+    public NBTType getType() {
+        return NBTType.BYTE_ARRAY;
     }
 
     public byte[] getData() {
