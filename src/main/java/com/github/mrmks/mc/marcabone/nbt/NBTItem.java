@@ -4,15 +4,21 @@ import org.bukkit.inventory.ItemStack;
 
 public final class NBTItem {
     private final boolean modifiable;
-    private final ItemStack stack;
+    private final boolean same;
+    final ItemStack stack;
 
     public NBTItem(ItemStack stack) {
         this.stack = NBTUtils.wrapCopy(stack);
+        this.same = stack == this.stack;
         modifiable = NBTUtils.isItemTagModifiable(this.stack);
     }
 
     public boolean isModifiable() {
         return modifiable;
+    }
+
+    public boolean isSource() {
+        return same;
     }
 
     public TagCompound getTag() {

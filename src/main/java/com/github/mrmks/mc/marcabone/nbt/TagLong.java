@@ -1,9 +1,11 @@
 package com.github.mrmks.mc.marcabone.nbt;
 
 public final class TagLong extends TagBase {
-    TagLong(){}
+    TagLong(Object ins){
+        super(ins);
+    }
     public TagLong(long data) {
-        wrapNMSIns(NBTUtils.newLong(data));
+        super(NBTUtils.newLong(data));
     }
 
     @Override

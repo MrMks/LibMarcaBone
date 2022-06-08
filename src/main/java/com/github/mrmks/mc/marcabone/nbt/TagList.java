@@ -4,6 +4,10 @@ public final class TagList extends TagBase {
 
     public TagList() {}
 
+    TagList(Object ins) {
+        super(ins);
+    }
+
     @Override
     public NBTType getType() {
         return NBTType.LIST;

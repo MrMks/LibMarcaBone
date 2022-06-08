@@ -1,9 +1,11 @@
 package com.github.mrmks.mc.marcabone.nbt;
 
 public final class TagDouble extends TagBase {
-    TagDouble(){}
+    TagDouble(Object ins){
+        super(ins);
+    }
     public TagDouble(double data) {
-        wrapNMSIns(NBTUtils.newDouble(data));
+        super(NBTUtils.newDouble(data));
     }
 
     @Override

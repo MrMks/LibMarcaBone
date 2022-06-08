@@ -1,9 +1,11 @@
 package com.github.mrmks.mc.marcabone.nbt;
 
 public final class TagShort extends TagBase {
-    TagShort(){}
+    TagShort(Object ins){
+        super(ins);
+    }
     public TagShort(short data) {
-        wrapNMSIns(NBTUtils.newShort(data));
+        super(NBTUtils.newShort(data));
     }
 
     @Override

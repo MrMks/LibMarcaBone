@@ -1,9 +1,11 @@
 package com.github.mrmks.mc.marcabone.nbt;
 
 public final class TagFloat extends TagBase {
-    TagFloat(){}
+    TagFloat(Object obj){
+        super(obj);
+    }
     public TagFloat(float data) {
-        wrapNMSIns(NBTUtils.newFloat(data));
+        super(NBTUtils.newFloat(data));
     }
 
     @Override

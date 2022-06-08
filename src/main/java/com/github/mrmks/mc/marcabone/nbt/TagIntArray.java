@@ -1,9 +1,11 @@
 package com.github.mrmks.mc.marcabone.nbt;
 
 public final class TagIntArray extends TagBase {
-    TagIntArray(){}
+    TagIntArray(Object ins){
+        super(ins);
+    }
     public TagIntArray(int[] data) {
-        wrapNMSIns(NBTUtils.newIntArray(data));
+        super(NBTUtils.newIntArray(data));
     }
 
     @Override

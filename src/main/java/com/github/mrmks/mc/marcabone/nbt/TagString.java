@@ -1,9 +1,11 @@
 package com.github.mrmks.mc.marcabone.nbt;
 
 public final class TagString extends TagBase {
-    TagString(){}
+    TagString(Object ins){
+        super(ins);
+    }
     public TagString(String str) {
-        wrapNMSIns(NBTUtils.newString(str));
+        super(NBTUtils.newString(str));
     }
 
     @Override

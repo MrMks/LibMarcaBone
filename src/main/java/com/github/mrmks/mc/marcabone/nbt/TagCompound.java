@@ -6,6 +6,10 @@ public final class TagCompound extends TagBase {
 
     public TagCompound() {}
 
+    TagCompound(Object ins){
+        super(ins);
+    }
+
     @Override
     public NBTType getType() {
         return NBTType.COMPOUND;

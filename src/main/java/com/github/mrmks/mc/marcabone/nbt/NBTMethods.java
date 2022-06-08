@@ -58,9 +58,9 @@ interface NBTMethods {
 
     void listAdd(Object list, int index, Object tag);
 
-    TagBase listRemove(Object list, int index);
+    Object listRemove(Object list, int index);
 
-    TagBase listGet(Object list, int index);
+    Object listGet(Object list, int index);
 
     boolean listIsEmpty(Object list);
 
@@ -69,7 +69,7 @@ interface NBTMethods {
     // compound methods
     void compoundSet(Object cmp, String k, Object v);
 
-    TagBase compoundGet(Object cmp, String k);
+    Object compoundGet(Object cmp, String k);
 
     void compoundRemove(Object cmp, String k);
 
@@ -90,6 +90,8 @@ interface NBTMethods {
     boolean itemHasCompound(Object stack);
 
     ItemStack itemConvert(ItemStack stack);
+
+    NBTType testInstance(Object obj);
 
     boolean testInstance(NBTType type, Object obj);
 }

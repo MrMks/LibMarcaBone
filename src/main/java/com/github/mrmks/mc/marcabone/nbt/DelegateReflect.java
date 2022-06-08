@@ -245,13 +245,13 @@ class DelegateReflect implements NBTMethods {
     }
 
     @Override
-    public TagBase listRemove(Object list, int index) {
-        return wrap(rmLst[3].tryInvoke(list, null, index));
+    public Object listRemove(Object list, int index) {
+        return rmLst[3].tryInvoke(list, null, index);
     }
 
     @Override
-    public TagBase listGet(Object list, int index) {
-        return wrap(rmLst[0].tryInvoke(list, null, index));
+    public Object listGet(Object list, int index) {
+        return rmLst[0].tryInvoke(list, null, index);
     }
 
     @Override
@@ -270,8 +270,8 @@ class DelegateReflect implements NBTMethods {
     }
 
     @Override
-    public TagBase compoundGet(Object cmp, String k) {
-        return wrap(rmCmp[0].tryInvoke(cmp, null, k));
+    public Object compoundGet(Object cmp, String k) {
+        return rmCmp[0].tryInvoke(cmp, null, k);
     }
 
     @Override
@@ -323,9 +323,7 @@ class DelegateReflect implements NBTMethods {
                 rmNMS[1].tryInvoke(stack, null, obj);
             }
             if ((boolean) rmNMS[2].tryInvoke(stack, false)) {
-                TagCompound rt = new TagCompound();
-                rt.wrapNMSIns(obj);
-                return rt;
+                return new TagCompound(obj);
             } else {
                 if (f) rmNMS[1].tryInvoke(stack, null, (Object) null);
             }
@@ -367,17 +365,15 @@ class DelegateReflect implements NBTMethods {
     }
 
     @Override
+    public NBTType testInstance(Object obj) {
+        int i = indexOfClass(kNBT, obj.getClass());
+        return i < 0 ? null : NBTType.values()[i];
+    }
+
+    @Override
     public boolean testInstance(NBTType type, Object obj) {
         int i = indexOfClass(kNBT, obj.getClass());
         return i >= 0 && NBTType.values()[i] == type;
-    }
-
-    private TagBase wrap(Object obj) {
-        int i = indexOfClass(kNBT, obj.getClass());
-        if (i < 0) return null;
-        TagBase rt = NBTUtils.generateWrapIns(NBTType.values()[i]);
-        rt.wrapNMSIns(obj);
-        return rt;
     }
 
     private int indexOfClass(Class<?>[] ks, Class<?> k) {

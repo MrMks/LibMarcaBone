@@ -171,17 +171,17 @@ class Delegate_1_12_R1 implements NBTMethods {
     }
 
     @Override
-    public TagBase listRemove(Object list, int index) {
+    public Object listRemove(Object list, int index) {
         if (list instanceof NBTTagList) {
-            return wrap(((NBTTagList) list).remove(index));
+            return ((NBTTagList) list).remove(index);
         }
         return null;
     }
 
     @Override
-    public TagBase listGet(Object list, int index) {
+    public Object listGet(Object list, int index) {
         if (list instanceof NBTTagList) {
-            return wrap(((NBTTagList) list).i(index));
+            return ((NBTTagList) list).i(index);
         }
         return null;
     }
@@ -210,9 +210,9 @@ class Delegate_1_12_R1 implements NBTMethods {
     }
 
     @Override
-    public TagBase compoundGet(Object cmp, String k) {
+    public Object compoundGet(Object cmp, String k) {
         if (k != null && !k.isEmpty() && cmp instanceof NBTTagCompound) {
-            return wrap(((NBTTagCompound) cmp).get(k));
+            return ((NBTTagCompound) cmp).get(k);
         }
         return null;
     }
@@ -294,9 +294,7 @@ class Delegate_1_12_R1 implements NBTMethods {
             boolean f = nmsStack.getTag() == null;
             if (f) nmsStack.setTag(new NBTTagCompound());
             if (nmsStack.hasTag()) {
-                TagCompound rt = new TagCompound();
-                rt.wrapNMSIns(nmsStack.getTag());
-                return rt;
+                return new TagCompound(nmsStack.getTag());
             } else {
                 if (f) nmsStack.setTag(null);
             }
@@ -333,13 +331,12 @@ class Delegate_1_12_R1 implements NBTMethods {
     }
 
     @Override
-    public boolean testInstance(NBTType tag, Object obj) {
-        return obj instanceof NBTBase && tag.ordinal() == ((NBTBase) obj).getTypeId();
+    public NBTType testInstance(Object obj) {
+        return NBTType.values()[((NBTBase)obj).getTypeId()];
     }
 
-    private TagBase wrap(NBTBase obj) {
-        TagBase base = NBTUtils.generateWrapIns(NBTType.values()[obj.getTypeId()]);
-        base.wrapNMSIns(obj);
-        return base;
+    @Override
+    public boolean testInstance(NBTType tag, Object obj) {
+        return obj instanceof NBTBase && tag.ordinal() == ((NBTBase) obj).getTypeId();
     }
 }

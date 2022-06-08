@@ -61,32 +61,32 @@ public class NBTUtils {
             if (itemTag == null) return false;
             if (!me.compoundHasKey(itemTag.getNMSIns(), "__C__")) return false;
 
-            TagBase cTag = me.compoundGet(itemTag.getNMSIns(), "__C__");
+            TagBase cTag = testCmpGet(me, itemTag.getNMSIns(), "__C__");
             if (!testTag(cTag, COMPOUND, me)) return false;
             tag = cTag.getNMSIns();
 
             boolean r;
-            r = testTag(cTag = me.compoundGet(tag, "B"), BYTE, me) && me.getByte(cTag.getNMSIns()) == 1;
-            r = r && testTag(cTag = me.compoundGet(tag, "SH"), SHORT, me) && me.getShort(cTag.getNMSIns()) == 2;
-            r = r && testTag(cTag = me.compoundGet(tag, "I"), INT, me) && me.getInt(cTag.getNMSIns()) == 3;
-            r = r && testTag(cTag = me.compoundGet(tag, "L"), LONG, me) && me.getLong(cTag.getNMSIns()) == 4;
-            r = r && testTag(cTag = me.compoundGet(tag, "F"), FLOAT, me) && me.getFloat(cTag.getNMSIns()) == 0.5f;
-            r = r && testTag(cTag = me.compoundGet(tag, "D"), DOUBLE, me) && me.getDouble(cTag.getNMSIns()) == 0.75;
-            r = r && testTag(cTag = me.compoundGet(tag, "ST"), STRING, me) && "sSsTtT".equals(me.getString(cTag.getNMSIns()));
-            r = r && testTag(cTag = me.compoundGet(tag, "BA"), BYTE_ARRAY, me) && me.getByteArray(cTag.getNMSIns())[0] == 1;
-            r = r && testTag(cTag = me.compoundGet(tag, "IA"), INT_ARRAY, me) && me.getIntArray(cTag.getNMSIns())[0] == 2;
-            r = r && testTag(cTag = me.compoundGet(tag, "LA"), LONG_ARRAY, me) && me.getLongArray(cTag.getNMSIns())[0] == 3;
+            r = testTag(cTag = testCmpGet(me, tag, "B"), BYTE, me) && me.getByte(cTag.getNMSIns()) == 1;
+            r = r && testTag(cTag = testCmpGet(me, tag, "SH"), SHORT, me) && me.getShort(cTag.getNMSIns()) == 2;
+            r = r && testTag(cTag = testCmpGet(me, tag, "I"), INT, me) && me.getInt(cTag.getNMSIns()) == 3;
+            r = r && testTag(cTag = testCmpGet(me, tag, "L"), LONG, me) && me.getLong(cTag.getNMSIns()) == 4;
+            r = r && testTag(cTag = testCmpGet(me, tag, "F"), FLOAT, me) && me.getFloat(cTag.getNMSIns()) == 0.5f;
+            r = r && testTag(cTag = testCmpGet(me, tag, "D"), DOUBLE, me) && me.getDouble(cTag.getNMSIns()) == 0.75;
+            r = r && testTag(cTag = testCmpGet(me, tag, "ST"), STRING, me) && "sSsTtT".equals(me.getString(cTag.getNMSIns()));
+            r = r && testTag(cTag = testCmpGet(me, tag, "BA"), BYTE_ARRAY, me) && me.getByteArray(cTag.getNMSIns())[0] == 1;
+            r = r && testTag(cTag = testCmpGet(me, tag, "IA"), INT_ARRAY, me) && me.getIntArray(cTag.getNMSIns())[0] == 2;
+            r = r && testTag(cTag = testCmpGet(me, tag, "LA"), LONG_ARRAY, me) && me.getLongArray(cTag.getNMSIns())[0] == 3;
             if (!r) return false;
 
-            cTag = me.compoundGet(tag, "LST");
+            cTag = testCmpGet(me, tag, "LST");
             if (!testTag(cTag, LIST, me)) return false;
             lst = cTag.getNMSIns();
 
-            cTag = me.listRemove(lst, 1);
+            cTag = wrapIns(me, me.listRemove(lst, 1));
             if (!testTag(cTag, STRING, me) || !"1".equals(me.getString(cTag.getNMSIns()))) return false;
             if (me.listSize(lst) != 1 || me.listIsEmpty(lst)) return false;
-            cTag = me.listGet(lst, 0);
-            if (cTag.getNMSIns() != me.listRemove(lst, 0).getNMSIns()) return false;
+            cTag = wrapIns(me, me.listGet(lst, 0));
+            if (cTag.getNMSIns() != me.listRemove(lst, 0)) return false;
             if (!testTag(cTag, STRING, me) || !"0".equals(me.getString(cTag.getNMSIns()))) return false;
             if (me.listSize(lst) != 0 || !me.listIsEmpty(lst)) return false;
 
@@ -111,6 +111,10 @@ public class NBTUtils {
 
     private static boolean testTag(TagBase tag, NBTType type, NBTMethods me) {
         return tag != null && me.testInstance(type, tag.getNMSIns()) && tag.getType() == type;
+    }
+
+    private static TagBase testCmpGet(NBTMethods me, Object cmp, String key) {
+        return wrapIns(me, me.compoundGet(cmp, key));
     }
 
     public static boolean isAvailable() {
@@ -239,39 +243,6 @@ public class NBTUtils {
         return methods.testInstance(type, obj);
     }
 
-    // generate a empty nbt instance
-    static TagBase generateWrapIns(NBTType type) {
-        switch (type) {
-            case BYTE:
-                return new TagByte();
-            case SHORT:
-                return new TagShort();
-            case INT:
-                return new TagInt();
-            case LONG:
-                return new TagLong();
-            case FLOAT:
-                return new TagFloat();
-            case DOUBLE:
-                return new TagDouble();
-            case BYTE_ARRAY:
-                return new TagByteArray();
-            case STRING:
-                return new TagString();
-            case INT_ARRAY:
-                return new TagIntArray();
-            case LONG_ARRAY:
-                return new TagLongArray();
-            case LIST:
-                return new TagList();
-            case COMPOUND:
-                return new TagCompound();
-            case END:
-            default:
-                return new TagEnd();
-        }
-    }
-
     // list methods
     static void listAdd(TagList tag, TagBase val) {
         chkAv0();
@@ -285,12 +256,12 @@ public class NBTUtils {
 
     static TagBase listRemove(TagList list, int index) {
         chkAv0();
-        return methods.listRemove(list.getNMSIns(), index);
+        return wrapIns(methods, methods.listRemove(list.getNMSIns(), index));
     }
 
     static TagBase listGet(TagList list, int index) {
         chkAv0();
-        return methods.listGet(list.getNMSIns(), index);
+        return wrapIns(methods, methods.listGet(list.getNMSIns(), index));
     }
 
     static boolean listIsEmpty(TagList list) {
@@ -311,7 +282,7 @@ public class NBTUtils {
 
     static TagBase compoundGet(TagCompound cmp, String key) {
         chkAv0();
-        return methods.compoundGet(cmp.getNMSIns(), key);
+        return wrapIns(methods, methods.compoundGet(cmp.getNMSIns(), key));
     }
 
     static void compoundRemove(TagCompound cmp, String key) {
@@ -344,16 +315,99 @@ public class NBTUtils {
     }
 
     // item methods
-    static boolean isItemTagModifiable(Object stack) {
+    static boolean isItemTagModifiable(ItemStack stack) {
         return available && methods.itemCanModify(stack);
     }
 
-    static TagCompound getItemStackTag(Object stack) {
+    static TagCompound getItemStackTag(ItemStack stack) {
         return available ? methods.itemGetCompound(stack) : null;
     }
 
-    static void setItemStackTag(Object stack, TagCompound tag) {
+    static void setItemStackTag(ItemStack stack, TagCompound tag) {
         if (available) methods.itemSetCompound(stack, tag);
     }
 
+    // convert methods
+    static Object createEmptyInstance(NBTType type) {
+        Object ret;
+        switch (type) {
+            case COMPOUND:
+                ret = newCompound();
+                break;
+            case LIST:
+                ret = newList();
+                break;
+            case BYTE:
+                ret = newByte((byte) 0);
+                break;
+            case SHORT:
+                ret = newShort((short) 0);
+                break;
+            case INT:
+                ret = newInt(0);
+                break;
+            case LONG:
+                ret = newLong(0L);
+                break;
+            case FLOAT:
+                ret = newFloat(0);
+                break;
+            case DOUBLE:
+                ret = newDouble(0.0d);
+                break;
+            case STRING:
+                ret = newString("");
+                break;
+            case INT_ARRAY:
+                ret = newIntArray(new int[0]);
+                break;
+            case BYTE_ARRAY:
+                ret = newByteArray(new byte[0]);
+                break;
+            case LONG_ARRAY:
+                ret = newLongArray(new long[0]);
+                break;
+            default:
+                throw new IllegalStateException("Unrecognized NBT type");
+        }
+
+        return ret;
+    }
+
+    static TagBase wrapIns(NBTMethods me, Object ins) {
+        return generateWrapIns(me.testInstance(ins), ins);
+    }
+
+    // generate a empty nbt instance
+    static TagBase generateWrapIns(NBTType type, Object ins) {
+        switch (type) {
+            case BYTE:
+                return new TagByte(ins);
+            case SHORT:
+                return new TagShort(ins);
+            case INT:
+                return new TagInt(ins);
+            case LONG:
+                return new TagLong(ins);
+            case FLOAT:
+                return new TagFloat(ins);
+            case DOUBLE:
+                return new TagDouble(ins);
+            case BYTE_ARRAY:
+                return new TagByteArray(ins);
+            case STRING:
+                return new TagString(ins);
+            case INT_ARRAY:
+                return new TagIntArray(ins);
+            case LONG_ARRAY:
+                return new TagLongArray(ins);
+            case LIST:
+                return new TagList();
+            case COMPOUND:
+                return new TagCompound();
+            case END:
+            default:
+                return new TagEnd(ins);
+        }
+    }
 }

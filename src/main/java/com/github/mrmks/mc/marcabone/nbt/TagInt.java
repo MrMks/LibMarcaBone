@@ -1,9 +1,11 @@
 package com.github.mrmks.mc.marcabone.nbt;
 
 public final class TagInt extends TagBase {
-    TagInt(){}
+    TagInt(Object ins){
+        super(ins);
+    }
     public TagInt(int data) {
-        wrapNMSIns(NBTUtils.newInt(data));
+        super(NBTUtils.newInt(data));
     }
 
     @Override
