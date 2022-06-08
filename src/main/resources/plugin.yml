@@ -1,5 +1,5 @@
 name: DevToolsB
-main: com.github.mrmks.mc.dev_tools_b.DevToolsB
+main: com.github.mrmks.mc.marcabone.Marcabone
 version: ${version}
 commands:
   dtbr:

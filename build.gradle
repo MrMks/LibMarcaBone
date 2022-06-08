@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.github.mrmks.mc'
-version '0.6.6-build22'
+version '0.7.1-build23'
 
 repositories {
     mavenCentral()
@@ -17,7 +17,7 @@ dependencies {
     compileOnly ('org.bukkit:bukkit:1.12.2-R0.1-SNAPSHOT') {
         exclude group: 'junit'
     }
-    compileOnly files("../Libraries/craftbukkit-1.12.2.jar")
+    compileOnly files("../libs/craftbukkit-1.12.2.jar")
 }
 
 processResources {

@@ -1,5 +1,5 @@
-import com.github.mrmks.mc.dev_tools_b.utils.StringReplace;
-import com.github.mrmks.mc.dev_tools_b.utils.StringUtils;
+import com.github.mrmks.mc.marcabone.utils.StringReplace;
+import com.github.mrmks.mc.marcabone.utils.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
