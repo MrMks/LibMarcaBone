@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Set;
 
-class Delegate_1_12_R1 implements NBTMethods {
+class Delegate_v1_12_R1 implements NBTMethods {
 
     @Override
     public boolean init() {
@@ -319,10 +319,13 @@ class Delegate_1_12_R1 implements NBTMethods {
 
     @Override
     public boolean itemHasCompound(Object stack) {
+        ItemStack nmsStack = null;
         if (stack instanceof ItemStack) {
-            return ((ItemStack) stack).hasTag();
+            nmsStack = (ItemStack) stack;
+        } else if (stack instanceof CraftItemStack) {
+            nmsStack = reflectGetItemHandle((CraftItemStack) stack);
         }
-        return false;
+        return nmsStack != null && nmsStack.hasTag();
     }
 
     @Override

@@ -5,14 +5,20 @@ import org.bukkit.Bukkit;
 public class ReflectUtils {
     private static String nmsPackage;
     private static String obcPackage;
+    private static String obcVersion;
 
     private static boolean isInit = false;
     private static void init() {
         if (!isInit) {
             obcPackage = Bukkit.getServer().getClass().getPackage().getName();
-            nmsPackage = "net.minecraft.server." + obcPackage.substring(obcPackage.lastIndexOf('.') + 1);
+            obcVersion = obcPackage.substring(obcPackage.lastIndexOf('.') + 1);
+            nmsPackage = "net.minecraft.server." + obcVersion;
             isInit = true;
         }
+    }
+
+    public static String getObsVersion() {
+        return obcVersion;
     }
 
     public static Class<?> loadNMSClass(String klassName) {

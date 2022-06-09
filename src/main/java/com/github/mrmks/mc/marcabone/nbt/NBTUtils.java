@@ -1,5 +1,6 @@
 package com.github.mrmks.mc.marcabone.nbt;
 
+import com.github.mrmks.mc.marcabone.utils.ReflectUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -14,7 +15,13 @@ public class NBTUtils {
     private static NBTMethods methods;
     public static void init(ConfigurationSection cs) {
         available = true;
-        NBTMethods[] ms = new NBTMethods[]{new Delegate_1_12_R1(), new DelegateReflect(cs)};
+        NBTMethods[] ms = new NBTMethods[]{null, new DelegateReflect(cs)};
+        try {
+            Class<?> kl = Class.forName("com.github.mrmks.mc.marcabone.nbt.Delegate_" + ReflectUtils.getObsVersion());
+            ms[0] = (NBTMethods) kl.newInstance();
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            ms = new NBTMethods[]{ms[1]};
+        }
         for (NBTMethods m : ms) {
             if (m.init() && testMethods(m)) {
                 methods = m;
@@ -317,6 +324,10 @@ public class NBTUtils {
     // item methods
     static boolean isItemTagModifiable(ItemStack stack) {
         return available && methods.itemCanModify(stack);
+    }
+
+    static boolean itemStackHasTag(ItemStack stack) {
+        return available && methods.itemHasCompound(stack);
     }
 
     static TagCompound getItemStackTag(ItemStack stack) {

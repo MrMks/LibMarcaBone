@@ -21,6 +21,10 @@ public final class NBTItem {
         return same;
     }
 
+    public boolean hasTag() {
+        return NBTUtils.itemStackHasTag(stack);
+    }
+
     public TagCompound getTag() {
         return NBTUtils.getItemStackTag(stack);
     }

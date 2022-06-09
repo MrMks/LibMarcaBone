@@ -14,9 +14,8 @@ public abstract class TagBase {
         return nmsInstance;
     }
 
-    @Deprecated
-    final void wrapNMSIns(Object obj) {
-        this.nmsInstance = obj;
+    final Object getNMSIns0() {
+        return nmsInstance;
     }
 
     public abstract NBTType getType();

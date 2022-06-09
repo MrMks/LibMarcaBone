@@ -7,7 +7,7 @@ import java.util.*;
 
 public class TestUtils {
 
-    @Test
+    //@Test
     public void testStringReplaceB() {
         String src = "name is: <asbname>, please call me <name>, <asd>";
         String tar = "name is: <asbname>, please call me Mirora_Mikasa, <asd>";
@@ -15,7 +15,7 @@ public class TestUtils {
         Assert.assertEquals(tar, tar1);
     }
 
-    @Test
+    //@Test
     public void testStringReplace() {
         String src = "name is: <name>, please call me <name>, <asd>";
         String tar = "name is: Mirora_Mikasa, please call me Mirora_Mikasa, 1234567890";
@@ -47,7 +47,7 @@ public class TestUtils {
         System.out.printf("StringUtils: %d\nStringReplace: %d\nString.replace: %d", t1-t0, t2-t1, t3-t2);
     }
 
-    @Test
+    //@Test
     public void testSplit() {
         String srcA = "";
         String[] res = StringUtils.split(srcA, ';');
