@@ -17,7 +17,8 @@ public class ReflectUtils {
         }
     }
 
-    public static String getObsVersion() {
+    public static String getObcVersion() {
+        init();
         return obcVersion;
     }
 

@@ -6,4 +6,5 @@ translation:
     help_topic_description: "Description"
     help_topic_usage: "Usage"
     help_topic_aliases: "Aliases"
+    help_topic_not_provided: "Help topic is not available"
   buildin.reload: "Build-in language file reloaded"

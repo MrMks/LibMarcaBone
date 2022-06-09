@@ -1,11 +1,11 @@
-name: DevToolsB
+name: LibMarcaBone
 main: com.github.mrmks.mc.marcabone.Marcabone
 version: ${version}
 commands:
-  dtbr:
+  lmbr:
     description: reload build-in language files
     usage: <command>
-    permission: dtb.perm.reload
+    permission: lmb.perm.reload
 permissions:
-  dtb.perm.reload:
+  lmb.perm.reload:
     default: op

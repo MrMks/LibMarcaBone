@@ -7,17 +7,18 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import static com.github.mrmks.mc.marcabone.nbt.NBTType.*;
 
 public class NBTUtils {
     private static boolean available;
     private static NBTMethods methods;
-    public static void init(ConfigurationSection cs) {
+    public static void init(ConfigurationSection cs, Logger logger) {
         available = true;
         NBTMethods[] ms = new NBTMethods[]{null, new DelegateReflect(cs)};
         try {
-            Class<?> kl = Class.forName("com.github.mrmks.mc.marcabone.nbt.Delegate_" + ReflectUtils.getObsVersion());
+            Class<?> kl = Class.forName("com.github.mrmks.mc.marcabone.nbt.Delegate_" + ReflectUtils.getObcVersion());
             ms[0] = (NBTMethods) kl.newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             ms = new NBTMethods[]{ms[1]};
@@ -28,7 +29,12 @@ public class NBTUtils {
                 break;
             }
         }
-        if (methods == null) available = false;
+        if (methods == null) {
+            available = false;
+            logger.warning("NBTUtils unable to init.");
+        } else {
+            logger.info("NBTUtils using " + (methods instanceof DelegateReflect ? "reflect" : "direct") + " methods.");
+        }
     }
 
     private static boolean testMethods(NBTMethods me) {
@@ -413,9 +419,9 @@ public class NBTUtils {
             case LONG_ARRAY:
                 return new TagLongArray(ins);
             case LIST:
-                return new TagList();
+                return new TagList(ins);
             case COMPOUND:
-                return new TagCompound();
+                return new TagCompound(ins);
             case END:
             default:
                 return new TagEnd(ins);

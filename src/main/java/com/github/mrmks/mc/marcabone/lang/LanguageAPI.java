@@ -100,6 +100,9 @@ public class LanguageAPI {
                 logger.log(Level.WARNING,
                         String.format("Reading file §c%s§r with a registered locale §2%s§r", path.getName(), file.getLocale()));
                 localeMap.get(file.getLocale()).merge(file);
+            } else if (defaultLocale.getLocale().equals(file.getLocale())) {
+                logger.log(Level.WARNING,
+                        String.format("File §c%s§r has same locale (§2%s§r) with default, we will skip this file", path.getName(), file.getLocale()));
             } else {
                 localeMap.put(file.getLocale(), file);
             }
@@ -107,9 +110,9 @@ public class LanguageAPI {
     }
 
     public LanguageHelper helper(String locale) {
-        if (locale == null) return helper();
+        if (locale == null) return helper0();
         LanguageFile file = localeMap.get(locale);
-        return file == null ? helper() : new LocaleHelper(file, defaultLocale);
+        return file == null ? helper0() : new LocaleHelper(file, defaultLocale);
     }
 
     public LanguageHelper helper(UUID uuid) {
@@ -117,11 +120,18 @@ public class LanguageAPI {
     }
 
     public LanguageHelper helper(Player player) {
-        if (player == null) return helper();
+        if (player == null) return helper0();
         return helper(player.getUniqueId());
     }
 
     public LanguageHelper helper() {
+        if (this == buildIn) return helper0();
+        String loc = buildIn.defaultLocale.getLocale();
+        LanguageFile lf;
+        return defaultLocale.getLocale().equals(loc) || (lf = localeMap.get(loc)) == null ? helper0() : new LocaleHelper(lf);
+    }
+
+    private LanguageHelper helper0() {
         return new LocaleHelper(defaultLocale);
     }
 }

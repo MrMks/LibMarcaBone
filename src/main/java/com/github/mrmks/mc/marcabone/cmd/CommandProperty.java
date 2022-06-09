@@ -14,7 +14,9 @@ public class CommandProperty {
     private static final String DESCRIPTION = "description";
     private static final String USAGE = "usage";
     private static final String PERMISSION = "permission";
-    private static final String PERMISSIONMESSAGE = "permissionMessage";
+    private static final String PERMISSION_MESSAGE = "permissionMessage";
+
+    private static final String[] EMPTY_ALIASES = new String[0];
 
     private final boolean adapter;
 
@@ -46,6 +48,11 @@ public class CommandProperty {
         this.extra_desc = adapter && (desc == null || desc.isEmpty());
         this.extra_usg = adapter && (usg == null || usg.isEmpty());
 
+        if (name == null) throw new IllegalArgumentException("Name can't be null");
+        if (aliases == null) aliases = EMPTY_ALIASES;
+        if (usg == null) usg = "";
+        if (desc == null) desc = "";
+
         this.name = new AlternativeProperty<>(name);
         this.aliases = new AlternativeProperty<>(aliases);
         this.desc = new AlternativeProperty<>(desc);
@@ -59,13 +66,13 @@ public class CommandProperty {
             extra_desc = load0(section, DESCRIPTION, desc, extra_desc);
             extra_usg = load0(section, USAGE, usg, extra_usg);
             extra_perm = load0(section, PERMISSION, perm, extra_perm);
-            load0(section, PERMISSIONMESSAGE, permMsg, extra_perm);
+            load0(section, PERMISSION_MESSAGE, permMsg, extra_perm);
         } else {
             load0(section, NAME, name);
             load0(section, DESCRIPTION, desc);
             load0(section, USAGE, usg);
             load0(section, PERMISSION, perm);
-            load0(section, PERMISSIONMESSAGE, permMsg);
+            load0(section, PERMISSION_MESSAGE, permMsg);
 
             if (section.isList(ALIASES)) {
                 List<String> lst = section.getStringList(ALIASES);
@@ -118,23 +125,29 @@ public class CommandProperty {
 
     public String[] getAliases() {
         String[] src = aliases.getValue();
-        String[] copy = new String[src.length];
-        System.arraycopy(src, 0, copy, 0, src.length);
-        return copy;
+        if (src == EMPTY_ALIASES || src.length == 0) return src;
+        else {
+            String[] copy = new String[src.length];
+            System.arraycopy(src, 0, copy, 0, src.length);
+            return copy;
+        }
     }
 
     public String getDescription() {
         return desc.getValue();
     }
 
+    // the usage can not be empty
     public String getUsage() {
         return usg.getValue();
     }
 
+    // if the permission is null or is an empty string, the permission check will always return true.
     public String getPermission() {
         return perm.getValue();
     }
 
+    // if the permission message is null, we will send no message; or we will send that message;
     public String getPermissionMessage() {
         return permMsg.getValue();
     }

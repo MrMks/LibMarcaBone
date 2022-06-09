@@ -44,7 +44,7 @@ public abstract class CommandAdaptorDirect extends AbstractCommand implements IS
 
     @Override
     public void displayUsage(CommandSender sender, String label, List<String> fLabel, ArraySlice<String> args) {
-        displayUsage(sender, getDescription(), getUsage(), fLabel);
+        displayUsage(sender, getDescription(), getUsage(), label, fLabel);
     }
 
     @Override
@@ -123,24 +123,28 @@ public abstract class CommandAdaptorDirect extends AbstractCommand implements IS
             String _usg = CommandAdaptorDirect.this.getUsage();
 
             StringBuilder sb = new StringBuilder();
-            sb.append(ChatColor.GOLD);
-            sb.append(helper.trans("buildin.cmd.help_topic_description")).append(':').append(' ');
-            sb.append(ChatColor.WHITE);
-            sb.append(helper.trans(_desc));
-            sb.append("\n");
-            sb.append(ChatColor.GOLD);
-            sb.append(helper.trans("buildin.cmd.help_topic_usage")).append(':').append(' ');
-            sb.append(ChatColor.WHITE);
-            sb.append(helper.trans(_usg, "command", this.name.substring(1)));
-            if (CommandAdaptorDirect.this.getAliases().size() > 0) {
+            if (_desc != null) {
+                sb.append(ChatColor.GOLD);
+                sb.append(helper.trans("buildin.cmd.help_topic_description")).append(':').append(' ');
+                sb.append(ChatColor.WHITE);
+                sb.append(helper.trans(_desc));
                 sb.append("\n");
+            }
+            if (_usg != null) {
+                sb.append(ChatColor.GOLD);
+                sb.append(helper.trans("buildin.cmd.help_topic_usage")).append(':').append(' ');
+                sb.append(ChatColor.WHITE);
+                sb.append(helper.trans(_usg, "command", this.name.substring(1)));
+                sb.append("\n");
+            }
+            if (CommandAdaptorDirect.this.getAliases().size() > 0) {
                 sb.append(ChatColor.GOLD);
                 sb.append(helper.trans("buildin.cmd.help_topic_aliases")).append(':').append(' ');
                 sb.append(ChatColor.WHITE);
                 sb.append(ChatColor.WHITE).append(StringUtils.join(CommandAdaptorDirect.this.getAliases(), ", "));
             }
 
-            return sb.toString();
+            return sb.length() == 0 ? helper.trans("buildin.cmd.help_topic_not_provided") : sb.toString();
         }
 
         @Override

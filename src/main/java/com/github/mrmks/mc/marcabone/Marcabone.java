@@ -1,7 +1,6 @@
 package com.github.mrmks.mc.marcabone;
 
 import com.github.mrmks.mc.marcabone.lang.LanguageAPI;
-
 import com.github.mrmks.mc.marcabone.nbt.NBTUtils;
 import com.github.mrmks.mc.marcabone.utils.YamlConfigurationLoader;
 import org.bukkit.event.HandlerList;
@@ -19,18 +18,18 @@ public class Marcabone extends JavaPlugin {
         super.onLoad();
         YamlConfigurationLoader loader = new YamlConfigurationLoader(this, "nbtmap.yml");
         loader.saveDefaultConfig();
-        NBTUtils.init(loader.getConfig());
+        NBTUtils.init(loader.getConfig(), getLogger());
     }
 
     @Override
     public void onEnable() {
         LanguageAPI.init(this);
-        getCommand("dtbr").setExecutor(new ExecutorReload());
+        getCommand("lmbr").setExecutor(new ExecutorReload());
     }
 
     @Override
     public void onDisable() {
-        getCommand("dtbr").setExecutor(null);
+        getCommand("lmbr").setExecutor(null);
         HandlerList.unregisterAll(this);
         LanguageAPI.cleanup();
     }

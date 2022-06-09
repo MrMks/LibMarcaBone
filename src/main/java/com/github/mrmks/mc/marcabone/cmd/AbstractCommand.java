@@ -54,7 +54,7 @@ public abstract class AbstractCommand implements ICommand, IConfigurable {
         if (!msg.isEmpty()) sender.sendMessage(split(msg, '\n', true));
     }
 
-    protected void displayUsage(CommandSender sender, String desc, String usg, List<String> label) {
+    protected void displayUsage(CommandSender sender, String desc, String usg, String label, List<String> fLabel) {
         if (sender == null) return;
         LanguageHelper helper = getHelper(sender);
         if (desc != null) {
@@ -62,7 +62,7 @@ public abstract class AbstractCommand implements ICommand, IConfigurable {
             if (!msg.isEmpty()) sender.sendMessage(split(msg, '\n', true));
         }
         if (usg != null) {
-            String msg = helper.trans(usg, "command", append(label, ' '));
+            String msg = helper.trans(usg, "command", append(fLabel, ' ') + ' ' + label);
             if (!msg.isEmpty()) sender.sendMessage(split(msg, '\n', true));
         }
     }

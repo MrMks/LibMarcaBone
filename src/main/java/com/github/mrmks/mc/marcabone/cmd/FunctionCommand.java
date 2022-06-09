@@ -47,7 +47,7 @@ public abstract class FunctionCommand extends AbstractCommand implements ISubCom
 
     @Override
     public void displayUsage(CommandSender sender, String label, List<String> fLabel, ArraySlice<String> args) {
-        displayUsage(sender, getDescription(), getUsage(), fLabel);
+        displayUsage(sender, getDescription(), getUsage(), label, fLabel);
     }
 
     @Override
