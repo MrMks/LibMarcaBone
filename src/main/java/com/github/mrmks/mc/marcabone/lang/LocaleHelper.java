@@ -47,21 +47,31 @@ public class LocaleHelper implements LanguageHelper {
 
     @Override
     public String trans(String code, String key, String value) {
-        return StringUtils.replace(trans(code, code), key, value);
+        return StringUtils.replaceTag(trans(code, code), key, value);
     }
 
     @Override
     public String trans(String code, String def, String key, String value) {
-        return StringUtils.replace(trans(code, def), key, value);
+        return StringUtils.replaceTag(trans(code, def), key, value);
+    }
+
+    @Override
+    public String trans(String code, String[] kv) {
+        return StringUtils.replaceTag(trans(code), kv);
+    }
+
+    @Override
+    public String trans(String code, String def, String[] kv) {
+        return StringUtils.replaceTag(trans(code, def), kv);
     }
 
     @Override
     public String trans(String code, Map<String, String> map) {
-        return StringUtils.replace(trans(code), map);
+        return StringUtils.replaceTag(trans(code), map);
     }
 
     @Override
     public String trans(String code, String def, Map<String, String> map) {
-        return StringUtils.replace(trans(code, def), map);
+        return StringUtils.replaceTag(trans(code, def), map);
     }
 }

@@ -1,4 +1,3 @@
-import com.github.mrmks.mc.marcabone.utils.StringReplace;
 import com.github.mrmks.mc.marcabone.utils.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,7 +10,7 @@ public class TestUtils {
     public void testStringReplaceB() {
         String src = "name is: <asbname>, please call me <name>, <asd>";
         String tar = "name is: <asbname>, please call me Mirora_Mikasa, <asd>";
-        String tar1 = StringUtils.replace(src, "name", "Mirora_Mikasa");
+        String tar1 = StringUtils.replaceTag(src, "name", "Mirora_Mikasa");
         Assert.assertEquals(tar, tar1);
     }
 
@@ -24,7 +23,7 @@ public class TestUtils {
 
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < times; i++) {
-            tar1 = new StringReplace(src).replace("name", "Mirora_Mikasa").replace("asd", "1234567890").toString();
+            tar1 = StringUtils.replacer(src).replaceTag("name", "Mirora_Mikasa").replaceTag("asd", "1234567890").toString();
         }
 
         long t1 = System.currentTimeMillis();
@@ -32,7 +31,7 @@ public class TestUtils {
             Map<String, String> map = new HashMap<>();
             map.put("name", "Mirora_Mikasa");
             map.put("asd", "1234567890");
-            tar3 = StringUtils.replace(src, map);
+            tar3 = StringUtils.replaceTag(src, map);
         }
 
         long t2 = System.currentTimeMillis();
@@ -57,5 +56,12 @@ public class TestUtils {
         lst.add("avd");
         lst.add("fdjs");
         System.out.println(StringUtils.append(lst, ';'));
+    }
+
+    @Test
+    public void testReplace() {
+        String src = "name is: <name>, please call me <name>, <asd>23456789,<asd>0";
+        String tar = "name is: Mirora_Mikasa, please call me Mirora_Mikasa, 123456789,10";
+        Assert.assertEquals(tar, StringUtils.replace(src, new String[]{"<name>", "Mirora_Mikasa", "<asd>", "1"}));
     }
 }
