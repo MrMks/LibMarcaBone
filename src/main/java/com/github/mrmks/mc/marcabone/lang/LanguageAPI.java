@@ -89,14 +89,16 @@ public class LanguageAPI {
             File[] files = path.listFiles();
             if (files != null) {
                 for (File file : files) {
-                    readTranslations(file, logger);
+                    if(file.getName().endsWith(".yml")) readTranslations(file, logger);
                 }
             }
         } else {
             if (path.getName().equals("default.yml")) return;
             FileConfiguration cfg = YamlConfiguration.loadConfiguration(path);
             LanguageFile file = new LanguageFile(cfg, LOCALE_KEY, TRANSLATION_KEY);
-            if (localeMap.containsKey(file.getLocale())) {
+            if ("".equals(file.getLocale())) {
+                logger.warning("File §c" + path.getName() + "§r has empty locale, we will skip this.");
+            } else if (localeMap.containsKey(file.getLocale())) {
                 logger.log(Level.WARNING,
                         String.format("Reading file §c%s§r with a registered locale §2%s§r", path.getName(), file.getLocale()));
                 localeMap.get(file.getLocale()).merge(file);

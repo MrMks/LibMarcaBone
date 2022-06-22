@@ -4,6 +4,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 class LanguageFile {
@@ -18,7 +19,7 @@ class LanguageFile {
 
     LanguageFile(ConfigurationSection section, String localeKey, String transKey) {
         if (section != null) {
-            locale = section.getString(localeKey, "").toLowerCase();
+            locale = section.getString(localeKey, "").toLowerCase(Locale.ENGLISH);
             ConfigurationSection trans = section.getConfigurationSection(transKey);
             if (trans != null) {
                 trans.getKeys(true).forEach(key -> map.put(key, trans.getString(key)));
